@@ -1,0 +1,94 @@
+<div class="box" style="width: 700px;">
+    <h1 class="box_title">Redigera</h1>
+
+    <!-- Load jQuery build -->
+    <script type="text/javascript" src="/js/libs/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript">
+        tinyMCE.init({
+            // General options
+            mode : "textareas",
+            theme : "advanced",
+            plugins : "pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+
+            // Theme options
+            theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+            theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,image,cleanup,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+            theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,iespell,media,advhr,|,ltr,rtl,|,fullscreen",
+            theme_advanced_toolbar_location : "top",
+            theme_advanced_toolbar_align : "left",
+            theme_advanced_statusbar_location : "bottom",
+            theme_advanced_resizing : false,
+
+            // Drop lists for link/image/media/template dialogs
+            template_external_list_url : "js/template_list.js",
+            external_link_list_url : "js/link_list.js",
+            external_image_list_url : "js/image_list.js",
+            media_external_list_url : "js/media_list.js",
+
+            // Size
+            width: 652,
+            height: 400
+        });
+    </script>
+
+    <div class="box_content">
+
+        <?php
+        $this->form->prepare();
+
+        $form = $this->form->get('template_fieldset');
+        ?>
+
+        <div class="box_content">
+
+            <?php echo $this->partial('form-errors', array('form' => $this->form)); ?>
+
+            <form action="" method="POST" name="company_otm" id="company_otm">
+                <label>Namn</label>
+                <?php echo $this->formInput($form->get('name')); ?>
+
+                <label>Rubrik</label>
+                <?php echo $this->formInput($form->get('subject')); ?>
+
+                <label>Bcc <span class="right small grey">kommaseparerade adresser</span></label>
+                <?php echo $this->formInput($form->get('bcc')); ?>
+
+                <label>Mall</label>
+                <?php echo $this->formTextarea($form->get('template')); ?>
+
+                <input type="submit" class="button right" value="Spara" style="margin-top: 25px;">
+            </form>
+            <div class="clear"></div>
+        </div>
+
+    </div>
+</div>
+
+<div class="box">
+
+    <h1 class="box_title">Tillgänliga variabler</h1>
+
+    <div class="box_content">
+        <table class="table_rows">
+            <thead>
+                <tr>
+                    <th>Variable</th>
+                    <th>Typ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($this->template->getVariables() as $var => $type): ?>
+                <tr class="<?php echo $this->cycle(array('table_row_dark', ''))->next(); ?>">
+                    <td><?php echo $var; ?></td>
+                    <td><?php echo $type; ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <p>
+            Du när du ska använda en varible ska den omringas av %     <br>
+            E.g du har variablen first_name då ser de ut <span style="font-weight: bold;">%first_name%</span>
+        </p>
+    </div>
+</div>

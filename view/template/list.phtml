@@ -1,0 +1,55 @@
+<div class="box box_dynamic">
+    <h1 class="box_title">Lista på alla email-mallar</h1>
+
+    <div class="box_content">
+        <table class="table_rows">
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Namn</th>
+                    <th>Beskrivning</th>
+                    <th>BCC</th>
+                    <th>Updaterades</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach($this->templates as $idx => $template):
+
+                $classes = array();
+
+                $classes[] = $this->cycle(array('table_row_dark', null))->next();
+
+                if($template->getCreatedAt() == $template->getUpdatedAt()) {
+
+                    $classes[] = 'table_row_red';
+                }
+                ?>
+                <tr class="<?php echo implode(' ', $classes); ?>">
+                    <td>
+                        <input type="checkbox"/>
+                    </td>
+                    <td>
+                        <a href="<?php echo $this->url('admin/MCNEmail/template_edit', $template->toArray()); ?>">
+                            <?php echo $template->getName(); ?>
+                        </a>
+                    </td>
+                    <td>
+                        <?php echo $template->getDescription(); ?>
+                    </td>
+                    <td>
+                        <?php echo $template->getBcc(); ?>
+                    </td>
+                    <td>
+                        <?php
+                        echo $template->getUpdatedAt()
+                                      ->format('Y-m-d H:i:s');
+                        ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <div class="clear"></div>
+    </div>
+</div>

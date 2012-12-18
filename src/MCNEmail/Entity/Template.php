@@ -1,0 +1,215 @@
+<?php
+/**
+ * @author Antoine Hedgecock <antoine@pmg.se>
+ * @author Jonas Eriksson <jonas@pmg.se>
+ *
+ * @copyright PMG Media Group AB
+ */
+
+namespace MCNEmail\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use MCN\Object\Entity\Behavior;
+use MCN\Object\Entity\AbstractEntity;
+
+/**
+ * @ORM\Table(name="mcn_email_templates", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="unique_name", columns={ "name" })
+ * })
+ * @ORM\Entity(repositoryClass="MCN\Object\Entity\Repository")
+ * @ORM\HasLifecycleCallbacks
+ */
+class Template extends AbstractEntity
+{
+    use Behavior\TimestampableTrait;
+
+    //<editor-fold desc="property mapping">
+    /**
+     * @var integer
+     *
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     */
+    protected $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string")
+     */
+    protected $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $bcc;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text")
+     */
+    protected $description;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(type="array")
+     */
+    protected $variables;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $subject;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $template = null;
+    //</editor-fold>
+
+    /**
+     * @param array $variables
+     *
+     * @return mixed
+     */
+    public function render(array $variables)
+    {
+        return preg_replace_callback('/%([^%]+)%/', function($matches) use ($variables) {
+
+            $exp = explode('.', $matches[1]);
+
+            $var = $variables;
+
+            foreach($exp as $k) {
+
+                $var = $var[$k];
+            }
+
+            return $var;
+
+        }, $this->template);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        return ($this->subject !== null && $this->template !== null);
+    }
+
+    //<editor-fold desc="Getters & setters">
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $template
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * @param array $variables
+     */
+    public function setVariables($variables)
+    {
+        $this->variables = $variables;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVariables()
+    {
+        return $this->variables;
+    }
+
+    /**
+     * @param string $subject
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
+     * @param string $bcc
+     */
+    public function setBcc($bcc)
+    {
+        $this->bcc = $bcc;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBcc()
+    {
+        return $this->bcc;
+    }
+    //</editor-fold>
+}
