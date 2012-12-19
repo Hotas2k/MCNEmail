@@ -1,3 +1,6 @@
+<?php
+
+?>
 <div class="box" style="width: 700px;">
     <h1 class="box_title">Redigera</h1>
 
@@ -34,26 +37,25 @@
     <div class="box_content">
 
         <?php
-        $this->form->prepare();
-
-        $form = $this->form->get('template_fieldset');
         ?>
 
         <div class="box_content">
 
-            <?php echo $this->partial('form-errors', array('form' => $this->form)); ?>
-
             <form action="" method="POST" name="company_otm" id="company_otm">
                 <label>Namn</label>
+                <?php echo $this->formElementErrors($form->get('name')); ?>
                 <?php echo $this->formInput($form->get('name')); ?>
 
                 <label>Rubrik</label>
+                <?php echo $this->formElementErrors($form->get('subject')); ?>
                 <?php echo $this->formInput($form->get('subject')); ?>
 
                 <label>Bcc <span class="right small grey">kommaseparerade adresser</span></label>
+                <?php echo $this->formElementErrors($form->get('bcc')); ?>
                 <?php echo $this->formInput($form->get('bcc')); ?>
 
                 <label>Mall</label>
+                <?php echo $this->formElementErrors($form->get('template')); ?>
                 <?php echo $this->formTextarea($form->get('template')); ?>
 
                 <input type="submit" class="button right" value="Spara" style="margin-top: 25px;">
@@ -87,8 +89,8 @@
         </table>
 
         <p>
-            Du när du ska använda en varible ska den omringas av %     <br>
-            E.g du har variablen first_name då ser de ut <span style="font-weight: bold;">%first_name%</span>
+            Hur använder man variabler då?
+            <a href="http://mustache.github.com/mustache.5.html" target="_blank">WIKI</a>!
         </p>
     </div>
 </div>

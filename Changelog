@@ -1,0 +1,4 @@
+1.0.0
+
+Implemented mustache instead of custom rendering logic
+Refactor to lasted coding standard

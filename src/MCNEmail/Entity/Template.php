@@ -8,6 +8,7 @@
 
 namespace MCNEmail\Entity;
 
+use Zend\Form\Annotation;
 use Doctrine\ORM\Mapping as ORM;
 use MCN\Object\Entity\Behavior;
 use MCN\Object\Entity\AbstractEntity;
@@ -18,18 +19,21 @@ use MCN\Object\Entity\AbstractEntity;
  * })
  * @ORM\Entity(repositoryClass="MCN\Object\Entity\Repository")
  * @ORM\HasLifecycleCallbacks
+ *
+ * @Annotation\Name("email.template")
  */
 class Template extends AbstractEntity
 {
     use Behavior\TimestampableTrait;
 
-    //<editor-fold desc="property mapping">
     /**
      * @var integer
      *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
+     * @Annotation\Exclude
      */
     protected $id;
 
@@ -37,6 +41,8 @@ class Template extends AbstractEntity
      * @var string
      *
      * @ORM\Column(type="string")
+     *
+     * @Annotation\Attributes({ "disabled" : "disabled" })
      */
     protected $name;
 
@@ -44,6 +50,8 @@ class Template extends AbstractEntity
      * @var string
      *
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Annotation\AllowEmpty
      */
     protected $bcc;
 
@@ -58,6 +66,8 @@ class Template extends AbstractEntity
      * @var array
      *
      * @ORM\Column(type="array")
+     *
+     * @Annotation\Exclude
      */
     protected $variables;
 
@@ -74,30 +84,6 @@ class Template extends AbstractEntity
      * @ORM\Column(type="text", nullable=true)
      */
     protected $template = null;
-    //</editor-fold>
-
-    /**
-     * @param array $variables
-     *
-     * @return mixed
-     */
-    public function render(array $variables)
-    {
-        return preg_replace_callback('/%([^%]+)%/', function($matches) use ($variables) {
-
-            $exp = explode('.', $matches[1]);
-
-            $var = $variables;
-
-            foreach($exp as $k) {
-
-                $var = $var[$k];
-            }
-
-            return $var;
-
-        }, $this->template);
-    }
 
     /**
      * @return bool

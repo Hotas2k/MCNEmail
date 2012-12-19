@@ -34,16 +34,16 @@ return array(
 
     'view_manager' => array(
         'template_map' => array(
-            'MCNEmail/template/list' => __DIR__ . '/../view/template/list.phtml',
-            'MCNEmail/template/edit' => __DIR__ . '/../view/template/edit.phtml'
+            'mcn-email/template/list' => __DIR__ . '/../view/template/list.phtml',
+            'mcn-email/template/edit' => __DIR__ . '/../view/template/edit.phtml'
         )
     ),
 
     'service_manager' => array(
 
-        'invokables' => array(
+        'factories' => array(
 
-            'email_form_template_edit' => 'MCNEmail\Form\Template\Edit'
+            'email.form.template' => 'MCNEmail\Form\Factory\Template'
         )
     ),
 

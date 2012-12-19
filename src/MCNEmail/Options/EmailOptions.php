@@ -1,14 +1,14 @@
 <?php
 /**
  * @author Antoine Hedgecock <antoine@pmg.se>
+ * @author Jonas Eriksson <jonas@pmg.se>
+ *
+ * @copyright PMG Media Group AB
  */
 
-/**
- * @namespace
- */
-namespace MCNEmail\Service;
-use Zend\Stdlib\AbstractOptions,
-    MCNEmail\Entity\Template as TemplateEntity;
+namespace MCNEmail\Options;
+
+use Zend\Stdlib\AbstractOptions;
 
 /**
  * @property $from            string

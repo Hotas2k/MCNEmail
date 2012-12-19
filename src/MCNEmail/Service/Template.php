@@ -68,7 +68,6 @@ class Template
         return $keys;
     }
 
-
     /**
      * @param string $name
      * @return TemplateEntity|null
@@ -81,8 +80,7 @@ class Template
             )
         );
 
-        return $this->getRepository()
-                    ->fetchOne($options);
+        return $this->getRepository()->fetchOne($options);
     }
 
     /**
@@ -98,10 +96,12 @@ class Template
             )
         );
 
-        return $this->getRepository()
-                    ->fetchOne($options);
+        return $this->getRepository()->fetchOne($options);
     }
 
+    /**
+     * @param \MCNEmail\Entity\Template $entity
+     */
     public function save(TemplateEntity $entity)
     {
         if (! $this->em->getUnitOfWork()->isInIdentityMap($entity)) {

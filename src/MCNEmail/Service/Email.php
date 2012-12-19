@@ -17,6 +17,8 @@ use Zend\Log\LoggerInterface;
 use MCNEmail\Entity\Template  as TemplateEntity;
 use MCNEmail\Service\Template as TemplateService;
 use Zend\Log\Logger;
+use MCNEmail\Options\EmailOptions;
+use Mustache_Engine;
 
 /**
  * @category MCNEmail
@@ -45,6 +47,11 @@ class Email
     protected $transport;
 
     /**
+     * @var \Mustache_Engine
+     */
+    protected $mustache;
+
+    /**
      * @param Template           $service
      * @param TransportInterface $transport
      * @param EmailOptions       $options
@@ -54,6 +61,10 @@ class Email
         $this->options   = ($options == null) ? new EmailOptions() : $options;
         $this->service   = $service;
         $this->transport = $transport;
+        $this->mustache  = new Mustache_Engine(array(
+            'cache'   => 'data/tmp/',
+            'charset' => 'utf-8'
+        ));
     }
 
     /**
@@ -113,10 +124,10 @@ class Email
             return false;
         }
 
-        // Place the variables in the template
-        $templateString = $template->render($variables);
+        // render
+        $subject        = $this->mustache->render($template->getSubject(), $variables);
+        $templateString = $this->mustache->render($template->getTemplate(), $variables);
 
-        // Create the message
         $message = $this->getBasicMessage();
 
         // TODO: find out why this is required
@@ -133,7 +144,7 @@ class Email
         // Apply the variable stuff
         $message->setTo($email)
                 ->setBody($body)
-                ->setSubject($template->getSubject());
+                ->setSubject($subject);
 
         // Get the emails
         $bcc = explode(',', str_replace(' ', '', $template->getBcc()));

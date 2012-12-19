@@ -3,14 +3,16 @@
  * @author Antoine Hedgecock <antoine@pmg.se>
  */
 
-/**
- * @namespace
- */
 namespace MCNEmail\Factory;
-use Zend\Mail\Transport,
-    Zend\ServiceManager\FactoryInterface,
-    Zend\ServiceManager\ServiceLocatorInterface;
 
+use Zend\Mail\Transport;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+
+/**
+ * @category MCNEmail
+ * @package Factory
+ */
 class EmailTransportFactory implements FactoryInterface
 {
     /**

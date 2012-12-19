@@ -1,18 +1,25 @@
 <?php
 /**
  * @author Antoine Hedgecock <antoine@pmg.se>
+ * @author Jonas Eriksson <jonas@pmg.se>
+ *
+ * @copyright PMG Media Group AB
  */
+
+namespace MCNEmail\Factory;
+
+use MCNEmail\Service;
+use Zend\Mail\Transport;
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use MCNEmail\Options\EmailOptions;
+use Zend\Log\LoggerInterface;
 
 /**
- * @namespace
+ * @category MCNEmail
+ * @package
  */
-namespace MCNEmail\Factory;
-use MCNEmail\Service,
-    Zend\Mail\Transport,
-    Zend\ServiceManager\ServiceManager,
-    Zend\ServiceManager\FactoryInterface,
-    Zend\ServiceManager\ServiceLocatorInterface;
-
 class EmailFactory implements FactoryInterface
 {
     /**
@@ -26,17 +33,27 @@ class EmailFactory implements FactoryInterface
     {
         $configuration = $serviceLocator->get('Config')['MCNEmail'];
 
-        $options = new Service\EmailOptions(
+        $options = new EmailOptions(
             isSet($configuration['options']) ? $configuration['options'] : array()
         );
 
-        $serviceLocator->setService('email_options', $options);
-
-        return new Service\Email(
-            $serviceLocator->get('email_service_template'),
-            $serviceLocator->get('email_transport'),
+        $service = new Service\Email(
+            $serviceLocator->get('mcn.service.email.template'),
+            $serviceLocator->get('mcn.service.email.transport'),
             $options
         );
+
+        if ($serviceLocator->has('logger')) {
+
+            $logger = $serviceLocator->get('logger');
+
+            if ($logger instanceof LoggerInterface) {
+
+                $service->setLogger($logger);
+            }
+        }
+
+        return $service;
     }
 }
 

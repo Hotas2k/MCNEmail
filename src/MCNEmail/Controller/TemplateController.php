@@ -15,7 +15,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 /**
  * @method \Zend\Http\Request getRequest
  * @method \Zend\Http\Response getResponse
- * @method \Zend\Mvc\Controller\Plugin\Params param
+ * @method \Zend\Mvc\Controller\Plugin\Params params
  * @method \Zend\Mvc\Controller\Plugin\Redirect redirect
  *
  * @category MCNEmail
@@ -36,7 +36,23 @@ class TemplateController extends AbstractActionController
         $this->service = $service;
     }
 
+    /**
+     * Get the template form
+     *
+     * @see \MCNEmail\Form\Factory\Template
+     *
+     * @return \Zend\Form\Form
+     */
+    protected function getForm()
+    {
+        return $this->getServiceLocator()->get('email.form.template');
+    }
 
+    /**
+     * List all the templates
+     *
+     * @return array
+     */
     public function listAction()
     {
         $options = array(
@@ -52,21 +68,22 @@ class TemplateController extends AbstractActionController
         );
     }
 
+    /**
+     * Edit a template
+     *
+     * @return array|\Zend\Http\Response
+     */
     public function editAction()
     {
-        $form = $this->getServiceLocator()
-                     ->get('email_form_template_edit');
-
-        $id = $this->params('id');
+        $id   = $this->params('id');
+        $form = $this->getForm();
 
         $template = $this->service->getById($id);
 
         if (! $template) {
 
-            $this->response->setStatusCode(404);
-            return null;
+            return $this->getResponse()->setStatusCode(404);
         }
-
 
         $form->bind($template);
 
@@ -76,16 +93,12 @@ class TemplateController extends AbstractActionController
 
             if ($form->isValid()) {
 
-                $this->getService()
-                     ->save($template);
+                $this->service->save($template);
 
-                return $this->message('Mallen har sparats', 'Happ, vafan ska du göra nu då?', 'admin/MCNEmail/template_list');
+                return $this->message('Mallen har sparats', 'Happ, vafan ska du göra nu då?', 'admin/emailer/template_list');
             }
         }
 
-        return array(
-            'form'     => $form,
-            'template' => $template
-        );
+        return array('form' => $form,'template' => $template);
     }
 }

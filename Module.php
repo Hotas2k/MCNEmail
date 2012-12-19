@@ -54,8 +54,8 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
     {
         return array(
             'factories' => array(
-                'mcn.service.email'           => 'MCNEmail\Factory\EmailFactory',
-                'mcn.service.email.transport' => 'MCNEMail\Factory\EmailTransportFactory',
+                'mcn.service.email'           => new Factory\EmailFactory,
+                'mcn.service.email.transport' => new Factory\EmailTransportFactory,
 
                 'mcn.service.email.provider.mail-chimp' => 'MCNEmail\Factory\Provider\MailChimp',
 
