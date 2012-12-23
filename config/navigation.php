@@ -5,7 +5,7 @@
 return array(
     'MCNEmail' => array(
         'type'  => 'mvc',
-        'label' => 'MCNEmail',
+        'label' => 'MCN Email',
         'order' => 5,
 
         'pages' => array(

@@ -139,7 +139,7 @@ class Email
         $html->type = 'text/html';
 
         $body = new MimeMessage();
-        $body->setParts(array($text, $html));
+        $body->setParts(array($html, $text));
 
         // Apply the variable stuff
         $message->setTo($email)
@@ -157,7 +157,7 @@ class Email
             if (! $validator->isValid($email)) {
 
                 $this->getLogger()->warn(
-                    sprintf('MCNEmail service: invalid BCC address "%s" specified for template, name: %s', $email, $name)
+                    sprintf('MCNEmail service: invalid BCC address "%s" specified for template name: %s', $email, $name)
                 );
             }
 
