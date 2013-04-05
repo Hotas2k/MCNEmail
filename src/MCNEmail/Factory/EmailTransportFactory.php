@@ -46,21 +46,21 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * @category MCNEmail
- * @package Factory
+ * Class EmailTransportFactory
+ * @package MCNEmail\Factory
  */
 class EmailTransportFactory implements FactoryInterface
 {
     /**
      * @throws Exception\InvalidArgumentException
      *
-     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $sl
      *
      * @return \Zend\Mail\Transport\TransportInterface
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $sl)
     {
-        $configuration = $serviceLocator->get('Config')['MCNEmail']['transport'];
+        $configuration = $sl->get('Config')['MCNEmail']['transport'];
 
         // If no type has been specified we default to send amil
         $configuration['type'] = isSet($configuration['type']) ? $configuration['type'] : 'sendmail';

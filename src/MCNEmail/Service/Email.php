@@ -41,23 +41,24 @@
 
 namespace MCNEmail\Service;
 
+use MCNStdlib\Interfaces\MailServiceInterface;
+use Traversable;
 use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mail\Message as MailMessage;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Validator\EmailAddress as EmailValidator;
 use Zend\Log\LoggerInterface;
-use MCNEmail\Entity\Template  as TemplateEntity;
 use MCNEmail\Service\Template as TemplateService;
 use Zend\Log\Logger;
 use MCNEmail\Options\EmailOptions;
 use Mustache_Engine;
 
 /**
- * @category MCNEmail
- * @package Service
+ * Class Email
+ * @package MCNEmail\Service
  */
-class Email
+class Email implements MailServiceInterface
 {
     /**
      * @var LoggerInterface
@@ -122,23 +123,33 @@ class Email
     }
 
     /**
-     * @param string $name
-     * @param string $description
-     * @param string $email
-     * @param array  $variables
      *
-     * @return boolean
+     * @param string            $email
+     * @param string            $messageId
+     * @param array|Traversable $params
+     *
+     * @throws Exception\InvalidArgumentException
+     * @return bool
      */
-    public function send($name, $description, $email, array $variables = array())
+    public function send($email, $messageId, $params = array())
     {
-        $template = $this->service->get($name);
+        if ($params instanceof Traversable) {
+
+            $params = iterator_to_array($params);
+        }
+
+        if (! is_array($params)) {
+
+            throw new Exception\InvalidArgumentException('Params should be an array of traversable object');
+        }
+
+        $template = $this->service->get($messageId);
 
         if (! $template) {
 
-            $this->service->create($name, $description, $variables);
-
+            $this->service->create($messageId, $params);
             $this->getLogger()->crit(
-                sprintf('MCNEmail service: a new template was created name: %s, description: %s', $name, $description)
+                sprintf('MCNEmail service: a new template was created name: %s, description: %s', $messageId)
             );
 
             return false;
@@ -147,10 +158,10 @@ class Email
         if (! $template->isValid()) {
 
             $this->getLogger()->emerg(
-                sprintf('MCNEmail service: attempt to send email failed due to invalid template, name: %s', $name),
+                sprintf('MCNEmail service: attempt to send email failed due to invalid template, name: %s', $messageId),
                 array(
                     'email'     => $email,
-                    'variables' => $variables
+                    'variables' => $params
                 )
             );
 
@@ -158,10 +169,8 @@ class Email
         }
 
         // render
-        $subject        = $this->mustache->render($template->getSubject(), $variables);
-        $templateString = $this->mustache->render($template->getTemplate(), $variables);
-
-        $message = $this->getBasicMessage();
+        $subject        = $this->mustache->render($template->getSubject(),  $params);
+        $templateString = $this->mustache->render($template->getTemplate(), $params);
 
         // TODO: find out why this is required
         // If it's not added then the html gets sent as an attachment
@@ -174,49 +183,21 @@ class Email
         $body = new MimeMessage();
         $body->setParts(array($html, $text));
 
-        // Apply the variable stuff
-        $message->setTo($email)
-                ->setBody($body)
-                ->setSubject($subject);
+        $message = new MailMessage();
+        $message->setFrom($this->options->from);
+        $message->setReplyTo($this->options->reply_to);
+        $message->setEncoding($this->options->encoding);
+        $message->setTo($email);
+        $message->setBody($body);
+        $message->setSubject($subject);
 
-        // Get the emails
-        $bcc = explode(',', str_replace(' ', '', $template->getBcc()));
-
-        // Validator
-        $validator = new EmailValidator();
-
-        foreach($bcc as $email)
+        foreach(explode(',', $template->getBcc()) as $email)
         {
-
-            if ($validator->isValid($email)) {
-
-                $message->addBcc($email);
-
-            } else {
-
-                $this->getLogger()->warn(
-                    sprintf('MCNEmail service: invalid BCC address "%s" specified for template name: %s', $email, $name)
-                );
-            }
+            $message->addBcc(trim($email));
         }
 
         $this->transport->send($message);
 
         return true;
-    }
-
-    /**
-     * @return \Zend\Mail\Message
-     */
-    public function getBasicMessage()
-    {
-        $message = new MailMessage();
-
-        // Set the basic stuff
-        $message->setFrom($this->options->from)
-                ->setReplyTo($this->options->reply_to)
-                ->setEncoding($this->options->encoding);
-
-        return $message;
     }
 }

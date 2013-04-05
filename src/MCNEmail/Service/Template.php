@@ -39,69 +39,39 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-/**
- * @namespace
- */
 namespace MCNEmail\Service;
+
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager,
     MCNEmail\Entity\Template as TemplateEntity;
 
+/**
+ * Class Template
+ * @package MCNEmail\Service
+ */
 class Template
 {
     const SORT_EMPTY_TEMPLATE = 'empty_template';
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var \Doctrine\Common\Persistence\ObjectManager
      */
-    protected $em;
+    protected $objectManager;
 
     /**
-     * @param EntityManager $em
+     * @param ObjectManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(ObjectManager $em)
     {
-        $this->em = $em;
+        $this->objectManager = $em;
     }
 
     /**
-     * @return \MCN\Object\Entity\Repository
+     * @return \MCNEmail\Repository\TemplateInterface
      */
     protected function getRepository()
     {
-        return $this->em->getRepository('MCNEmail\Entity\Template');
-    }
-
-    /**
-     * @param array $array
-     *
-     * @return array
-     */
-    protected function getAvailableValidVariableKeys(array $array)
-    {
-        $keys = array();
-
-        foreach ($array as $key => $value) {
-
-            if (is_scalar($value)) {
-
-                $keys[$key] = gettype($value);
-
-            } else if($value instanceof \DateTime) {
-
-                $keys[$key] = 'datetime';
-            }
-
-            if (is_object($value) && method_exists($value, 'toArray')) {
-
-                $value = $value->toArray();
-            }
-
-            if (is_array($value)) {
-                $keys[$key] = array_merge($keys, $this->getAvailableValidVariableKeys($value));
-            }
-        }
-
-        return $keys;
+        return $this->objectManager->getRepository('MCNEmail\Entity\Template');
     }
 
     /**
@@ -110,13 +80,7 @@ class Template
      */
     public function get($name)
     {
-        $options = array(
-            'parameters' => array(
-                'name:eq'   => $name
-            )
-        );
-
-        return $this->getRepository()->fetchOne($options);
+        return $this->getRepository()->getByName($name);
     }
 
     /**
@@ -126,13 +90,7 @@ class Template
      */
     public function getById($id)
     {
-        $options = array(
-            'parameters' => array(
-                'id:eq'   => $id
-            )
-        );
-
-        return $this->getRepository()->fetchOne($options);
+        return $this->getRepository()->fetchById($id);
     }
 
     /**
@@ -140,49 +98,44 @@ class Template
      */
     public function save(TemplateEntity $entity)
     {
-        if (! $this->em->getUnitOfWork()->isInIdentityMap($entity)) {
+        if (! $this->objectManager->contains($entity)) {
 
-            $this->em->persist($entity);
+            $this->objectManager->persist($entity);
         }
 
         // TinyMCE removes html and body tags
         $entity->setTemplate(sprintf('<html><body>%s</body></html>', $entity->getTemplate()));
-
-        $this->em->flush();
+        $this->objectManager->flush();
     }
 
     /**
      * @param string $name
-     * @param string $description
-     * @param array  $variables
+     * @param array  $params
+     *
      * @return void
      */
-    public function create($name, $description, array $variables)
+    public function create($name, array $params)
     {
-        $variables = $this->getAvailableValidVariableKeys($variables);
-
         $entity = new TemplateEntity();
         $entity->fromArray(
             array(
-                'name'        => $name,
-                'variables'   => $variables,
-                'description' => $description
+                'name'      => $name,
+                'variables' => $params
             )
         );
 
-        $this->em->persist($entity);
-        $this->em->flush();
+        $this->objectManager->persist($entity);
+        $this->objectManager->flush();
     }
 
 
     /**
      * @param array $options
      *
-     * @return array|\MCN\Pagination\Pagination
+     * @return \Zend\Paginator\Paginator
      */
     public function fetchAll(array $options)
     {
-        return $this->getRepository()
-                    ->fetchAll($options);
+        return $this->getRepository()->fetchAll($options);
     }
 }

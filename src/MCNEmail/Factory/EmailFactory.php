@@ -50,35 +50,35 @@ use MCNEmail\Options\EmailOptions;
 use Zend\Log\LoggerInterface;
 
 /**
- * @category MCNEmail
- * @package
+ * Class EmailFactory
+ * @package MCNEmail\Factory
  */
 class EmailFactory implements FactoryInterface
 {
     /**
      * @throws Exception\LogicException
      *
-     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $sl
      *
      * @return \MCNEmail\Service\Email
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $sl)
     {
-        $configuration = $serviceLocator->get('Config')['MCNEmail'];
+        $configuration = $sl->get('Config')['MCNEmail'];
 
         $options = new EmailOptions(
             isSet($configuration['options']) ? $configuration['options'] : array()
         );
 
         $service = new Service\Email(
-            $serviceLocator->get('mcn.service.email.template'),
-            $serviceLocator->get('mcn.service.email.transport'),
+            $sl->get('mcn.service.email.template'),
+            $sl->get('mcn.service.email.transport'),
             $options
         );
 
-        if ($serviceLocator->has('logger')) {
+        if ($sl->has('logger')) {
 
-            $logger = $serviceLocator->get('logger');
+            $logger = $sl->get('logger');
 
             if ($logger instanceof LoggerInterface) {
 

@@ -39,16 +39,16 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-/**
- * @namespace
- */
 namespace MCNEmail\Repository;
-use MCN\Object\QueryInfo,
-    MCN\Object\Entity\Repository;
 
+use Doctrine\ORM\EntityRepository;
 use MCNEmail\Service\Template as TemplateService;
 
-class Template extends Repository
+/**
+ * Class Template
+ * @package MCNEmail\Repository
+ */
+class Template extends EntityRepository
 {
     protected function getBaseQuery(QueryInfo $qi)
     {

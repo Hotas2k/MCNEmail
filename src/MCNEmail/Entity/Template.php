@@ -39,26 +39,28 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-
 namespace MCNEmail\Entity;
 
+use MCNStdlib\Object\Entity\AbstractEntity;
+use MCNStdlib\Object\Entity\Behavior\TimestampableTrait;
 use Zend\Form\Annotation;
 use Doctrine\ORM\Mapping as ORM;
-use MCN\Object\Entity\Behavior;
-use MCN\Object\Entity\AbstractEntity;
 
 /**
+ * Class Template
+ * @package MCNEmail\Entity
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="mcn_email_templates", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_name", columns={ "name" })
  * })
- * @ORM\Entity(repositoryClass="MCN\Object\Entity\Repository")
- * @ORM\HasLifecycleCallbacks
  *
  * @Annotation\Name("email.template")
  */
 class Template extends AbstractEntity
 {
-    use Behavior\TimestampableTrait;
+    use TimestampableTrait;
 
     /**
      * @var integer
@@ -127,7 +129,6 @@ class Template extends AbstractEntity
         return ($this->subject !== null && $this->template !== null);
     }
 
-    //<editor-fold desc="Getters & setters">
     /**
      * @param string $description
      */
@@ -231,5 +232,4 @@ class Template extends AbstractEntity
     {
         return $this->bcc;
     }
-    //</editor-fold>
 }

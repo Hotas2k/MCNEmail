@@ -8,15 +8,13 @@
 
 namespace MCNEmail;
 
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\ModuleManager\Feature\ControllerProviderInterface;
+use Zend\Mvc\Controller\ControllerManager;
 
 /**
- * @category MCNMCNEmail
+ * Class Module
+ * @package MCNEmail
  */
-class Module implements ConfigProviderInterface, AutoloaderProviderInterface, ServiceProviderInterface, ControllerProviderInterface
+class Module
 {
     /**
      * Return an array for passing to Zend\Loader\AutoloaderFactory.
@@ -54,11 +52,6 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
     {
         return array(
             'factories' => array(
-                'mcn.service.email'           => new Factory\EmailFactory,
-                'mcn.service.email.transport' => new Factory\EmailTransportFactory,
-
-                'mcn.service.email.provider.mail-chimp' => 'MCNEmail\Factory\Provider\MailChimp',
-
                 'mcn.service.email.template' => function ($sm) {
 
                     return new Service\Template(
@@ -77,16 +70,16 @@ class Module implements ConfigProviderInterface, AutoloaderProviderInterface, Se
      */
     public function getControllerConfig()
     {
-        return [
-            'factories' => [
+        return array(
+            'factories' => array(
 
-                'email.template' => function ($sm) {
+                'mcn.email.template' => function (ControllerManager $sm) {
 
                     return new Controller\TemplateController(
                         $sm->getServiceLocator()->get('mcn.service.email.template')
                     );
                 }
-            ]
-        ];
+            )
+        );
     }
 }

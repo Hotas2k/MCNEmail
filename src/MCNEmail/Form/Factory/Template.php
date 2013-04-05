@@ -44,21 +44,21 @@ namespace MCNEmail\Form\Factory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as ObjectHydrator;
 
 /**
- * @category MCNEmail
- * @package Form
- * @subpackage Factory
+ * Class Template
+ * @package MCNEmail\Form\Factory
  */
 class Template implements FactoryInterface
 {
     /**
      * Create service
      *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface $sl
      * @return mixed
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $sl)
     {
         $builder = new AnnotationBuilder();
 
@@ -66,8 +66,14 @@ class Template implements FactoryInterface
          * @var $form \Zend\Form\Form
          */
         $form = $builder->createForm('MCNEmail\Entity\Template');
-        $form->setHydrator($serviceLocator->get('mcn.object.hydrator'));
         $form->setValidationGroup(array('subject','bcc','template'));
+
+        $hydrator = new ObjectHydrator(
+            $sl->get('doctrine.objectmanager'),
+            'MCNEmail\Entity\Template'
+        );
+
+        $form->setHydrator($hydrator);
 
         return $form;
     }

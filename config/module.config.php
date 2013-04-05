@@ -41,16 +41,7 @@
 
 return array(
 
-    'MCNEmail' => array(
-
-        'service' => array(
-
-            // Mailchimp configuration
-            'mailchimp'  => array(
-                'apiKey' => 'e096a5f539a1563a0c9a2bf2f0dc369b-us4'
-            )
-        )
-    ),
+    'MCNEmail' => array(),
 
     'doctrine' => array(
         'driver' => array(
@@ -80,15 +71,12 @@ return array(
 
         'factories' => array(
 
-            'email.form.template' => 'MCNEmail\Form\Factory\Template'
+            // templates
+            'mcn.form.email.template'     => 'MCNEmail\Form\Factory\Template',
+
+            // services
+            'mcn.service.email'           => 'MCNEmail\Factory\EmailFactory',
+            'mcn.service.email.transport' => 'MCNEmail\Factory\EmailTransportFactory'
         )
-    ),
-
-    'navigation' => array(
-        'admin' => include __DIR__ . '/navigation.php'
-    ),
-
-    'router' => array(
-        'routes' => include __DIR__ . '/routes.php'
     )
 );

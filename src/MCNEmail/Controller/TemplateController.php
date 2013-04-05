@@ -48,12 +48,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 /**
  * @method \Zend\Http\Request getRequest
  * @method \Zend\Http\Response getResponse
- * @method \Zend\Mvc\Controller\Plugin\Params params
- * @method \Zend\Mvc\Controller\Plugin\Redirect redirect
- * @method \MCN\Controller\Plugin\Message message
  *
- * @category MCNEmail
- * @package Controller
+ * @package MCNEmail\Controller
  */
 class TemplateController extends AbstractActionController
 {
@@ -97,9 +93,7 @@ class TemplateController extends AbstractActionController
 
         $templates = $this->service->fetchAll($options);
 
-        return array(
-            'templates' => $templates
-        );
+        return array('templates' => $templates);
     }
 
     /**
