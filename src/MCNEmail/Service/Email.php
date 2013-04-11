@@ -43,16 +43,11 @@ namespace MCNEmail\Service;
 
 use MCNStdlib\Interfaces\MailServiceInterface;
 use Traversable;
-use Zend\Mime\Part as MimePart;
-use Zend\Mime\Message as MimeMessage;
 use Zend\Mail\Message as MailMessage;
 use Zend\Mail\Transport\TransportInterface;
 use Zend\Validator\EmailAddress as EmailValidator;
-use Zend\Log\LoggerInterface;
-use MCNEmail\Service\Template as TemplateService;
 use Zend\Log\Logger;
 use MCNEmail\Options\EmailOptions;
-use Mustache_Engine;
 
 /**
  * Class Email
@@ -61,19 +56,14 @@ use Mustache_Engine;
 class Email implements MailServiceInterface
 {
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var EmailOptions
+     * @var \MCNEmail\Options\EmailOptions
      */
     protected $options;
 
     /**
-     * @var Template
+     * @var \MCNEmail\Service\TemplateInterface
      */
-    protected $service;
+    protected $templates;
 
     /**
      * @var \Zend\Mail\Transport\TransportInterface
@@ -81,123 +71,85 @@ class Email implements MailServiceInterface
     protected $transport;
 
     /**
-     * @var \Mustache_Engine
+     * @param TemplateInterface $templates
+     * @param EmailOptions      $options
      */
-    protected $mustache;
+    public function __construct(TemplateInterface $templates, EmailOptions $options = null)
+    {
+        $this->options   = ($options === null) ? new EmailOptions() : $options;
+        $this->templates = $templates;
+    }
 
     /**
-     * @param Template           $service
      * @param TransportInterface $transport
-     * @param EmailOptions       $options
      */
-    public function __construct(TemplateService $service, TransportInterface $transport, EmailOptions $options = null)
+    public function setTransport(TransportInterface $transport = null)
     {
-        $this->options   = ($options == null) ? new EmailOptions() : $options;
-        $this->service   = $service;
         $this->transport = $transport;
-        $this->mustache  = new Mustache_Engine(array(
-            'cache'   => 'data/tmp/',
-            'charset' => 'utf-8'
-        ));
     }
 
     /**
-     * @param \Zend\Log\LoggerInterface $logger
+     * Get the mail transport
+     *
+     * @return \Zend\Mail\Transport\TransportInterface
      */
-    public function setLogger(LoggerInterface $logger)
+    public function getTransport()
     {
-        $this->logger = $logger;
-    }
+        if ($this->transport === null) {
 
-    /**
-     * @return \Zend\Log\LoggerInterface
-     */
-    public function getLogger()
-    {
-        if ($this->logger == null) {
-
-            $this->logger = new Logger();
+            $class = '\\Zend\Mail\Transport\\' . $this->options->getDefaultTransport();
+            $this->transport = new $class();
         }
 
-        return $this->logger;
+        return $this->transport;
     }
 
     /**
+     * Email a person with a message from the given id
      *
-     * @param string            $email
-     * @param string            $messageId
-     * @param array|Traversable $params
+     * @param string             $email
+     * @param string             $templateId
+     * @param array|\Traversable $params
+     * @param null               $locale
+     * @param string             $format
      *
      * @throws Exception\InvalidArgumentException
-     * @return bool
+     * @return mixed
      */
-    public function send($email, $messageId, $params = array())
+    public function send($email, $templateId, $params = null, $locale = null, $format = self::FORMAT_HTML)
     {
-        if ($params instanceof Traversable) {
-
+        if ($params === null) {
+            $params = array();
+        } else if ($params instanceof Traversable) {
             $params = iterator_to_array($params);
         }
 
         if (! is_array($params)) {
 
-            throw new Exception\InvalidArgumentException('Params should be an array of traversable object');
-        }
-
-        $template = $this->service->get($messageId);
-
-        if (! $template) {
-
-            $this->service->create($messageId, $params);
-            $this->getLogger()->crit(
-                sprintf('MCNEmail service: a new template was created name: %s, description: %s', $messageId)
+            throw new Exception\InvalidArgumentException(
+                'Third argument params should be either null, array or traversable.'
             );
-
-            return false;
         }
 
-        if (! $template->isValid()) {
+        if (! $this->templates->has($templateId)) {
 
-            $this->getLogger()->emerg(
-                sprintf('MCNEmail service: attempt to send email failed due to invalid template, name: %s', $messageId),
-                array(
-                    'email'     => $email,
-                    'variables' => $params
-                )
-            );
 
-            return false;
+            $this->templates->create($templateId, $params, $locale, $format);
         }
 
-        // render
-        $subject        = $this->mustache->render($template->getSubject(),  $params);
-        $templateString = $this->mustache->render($template->getTemplate(), $params);
-
-        // TODO: find out why this is required
-        // If it's not added then the html gets sent as an attachment
-        $text = new MimePart('');
-        $text->type = "text/plain";
-
-        $html = new MimePart($templateString);
-        $html->type = 'text/html';
-
-        $body = new MimeMessage();
-        $body->setParts(array($html, $text));
+        list ($subject, $body) = $this->templates->render($templateId, $params, $locale, $format);
 
         $message = new MailMessage();
-        $message->setFrom($this->options->from);
-        $message->setReplyTo($this->options->reply_to);
-        $message->setEncoding($this->options->encoding);
-        $message->setTo($email);
-        $message->setBody($body);
         $message->setSubject($subject);
+        $message->setBody($body);
 
-        foreach(explode(',', $template->getBcc()) as $email)
-        {
-            $message->addBcc(trim($email));
-        }
+        $message->setEncoding($this->options->getEncoding());
 
-        $this->transport->send($message);
+        $message->setReplyTo($this->options->getReplyTo());
+        $message->setFrom($this->options->getFrom());
+        $message->setTo($email);
+        $message->setBcc($this->options->getBcc());
 
-        return true;
+        $this->getTransport()->send($message);
     }
 }

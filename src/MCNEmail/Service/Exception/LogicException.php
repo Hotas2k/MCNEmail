@@ -39,11 +39,12 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-/**
- * @namespace
- */
 namespace MCNEmail\Service\Exception;
 
+/**
+ * Class LogicException
+ * @package MCNEmail\Service\Exception
+ */
 class LogicException extends \LogicException implements ExceptionInterface
 {
 }

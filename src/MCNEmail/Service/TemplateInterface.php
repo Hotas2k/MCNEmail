@@ -39,12 +39,55 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
+namespace MCNEmail\Service;
+
+use MCNStdlib\Interfaces\MailServiceInterface;
+
 /**
- * @namespace
+ * Class TemplateInterface
+ * @package MCNEmail\Service
  */
-namespace MCNEmail\Factory\Exception;
-
-class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
+interface TemplateInterface
 {
+    /**
+     * Render a template
+     *
+     * @param string                  $templateId
+     * @param null|\Traversable|array $params
+     * @param null|string             $locale
+     * @param string                  $format
+     *
+     * @return string[]
+     */
+    public function render($templateId, $params = null, $locale = null, $format = MailServiceInterface::FORMAT_HTML);
 
+    /**
+     * @param string $templateId
+     *
+     * @return bool
+     */
+    public function has($templateId);
+
+    /**
+     * @param string                  $templateId
+     * @param null|\Traversable|array $params
+     *
+     * @throws Exception\RuntimeException If the template already exists
+     *
+     * @return void
+     */
+    public function create($templateId, array $params = array());
+
+    /**
+     * Update the template parameters next time it's rendered
+     *
+     * The next time a template is rendered it should update the update the params.
+     *
+     * @param string $templateId
+     *
+     * @throws Exception\TemplateNotFoundException
+     *
+     * @return void
+     */
+    public function templateRequestNewParams($templateId);
 }

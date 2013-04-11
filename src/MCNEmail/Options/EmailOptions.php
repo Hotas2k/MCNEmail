@@ -47,22 +47,65 @@ use Zend\Stdlib\AbstractOptions;
  * @property $from            string
  * @property $reply_to        string
  * @property $encoding        string
- * @property $template_format string
  */
 class EmailOptions extends AbstractOptions
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $from     = 'info@pmg.se';
+    protected $bcc = array();
+
     /**
      * @var string
      */
-    protected $reply_to = 'info@pmg.se';
+    protected $default_transport = 'Sendmail';
+
+    /**
+     * @var string
+     */
+    protected $from;
+
+    /**
+     * @var string
+     */
+    protected $reply_to;
+
     /**
      * @var string
      */
     protected $encoding = 'utf-8';
+
+    /**
+     * @param array $bcc
+     */
+    public function setBcc(array $bcc)
+    {
+        $this->bcc = $bcc;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBcc()
+    {
+        return $this->bcc;
+    }
+
+    /**
+     * @param string $default_transport
+     */
+    public function setDefaultTransport($default_transport)
+    {
+        $this->default_transport = $default_transport;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultTransport()
+    {
+        return $this->default_transport;
+    }
 
     /**
      * @param $encoding

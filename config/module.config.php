@@ -41,7 +41,9 @@
 
 return array(
 
-    'MCNEmail' => array(),
+    'MCNEmail' => array(
+
+    ),
 
     'doctrine' => array(
         'driver' => array(

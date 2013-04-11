@@ -39,42 +39,12 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-namespace MCNEmail\Form\Factory;
-
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as ObjectHydrator;
+namespace MCNEmail\Service\Exception;
 
 /**
- * Class Template
- * @package MCNEmail\Form\Factory
+ * Class TemplateNotFoundException
+ * @package MCNEmail\Service\Exception
  */
-class Template implements FactoryInterface
+class TemplateNotFoundException extends RuntimeException implements ExceptionInterface
 {
-    /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $sl
-     * @return mixed
-     */
-    public function createService(ServiceLocatorInterface $sl)
-    {
-        $builder = new AnnotationBuilder();
-
-        /**
-         * @var $form \Zend\Form\Form
-         */
-        $form = $builder->createForm('MCNEmail\Entity\Template');
-        $form->setValidationGroup(array('subject','bcc','template'));
-
-        $hydrator = new ObjectHydrator(
-            $sl->get('doctrine.objectmanager'),
-            'MCNEmail\Entity\Template'
-        );
-
-        $form->setHydrator($hydrator);
-
-        return $form;
-    }
 }
