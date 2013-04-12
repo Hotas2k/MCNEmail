@@ -41,101 +41,65 @@
 
 namespace MCNEmail\Service;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager,
-    MCNEmail\Entity\Template as TemplateEntity;
+use MCNStdlib\Interfaces\MailServiceInterface;
 
 /**
  * Class Template
  * @package MCNEmail\Service
  */
-class Template
+class Template implements TemplateInterface
 {
-    const SORT_EMPTY_TEMPLATE = 'empty_template';
-
     /**
-     * @var \Doctrine\Common\Persistence\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @param ObjectManager $em
-     */
-    public function __construct(ObjectManager $em)
-    {
-        $this->objectManager = $em;
-    }
-
-    /**
-     * @return \MCNEmail\Repository\TemplateInterface
-     */
-    protected function getRepository()
-    {
-        return $this->objectManager->getRepository('MCNEmail\Entity\Template');
-    }
-
-    /**
-     * @param string $name
-     * @return TemplateEntity|null
-     */
-    public function get($name)
-    {
-        return $this->getRepository()->getByName($name);
-    }
-
-    /**
-     * @param integer $id
+     * Render a template
      *
-     * @return TemplateEntity
+     * @param string                  $templateId
+     * @param null|\Traversable|array $params
+     * @param null|string             $locale
+     * @param string                  $format
+     *
+     * @return string[]
      */
-    public function getById($id)
+    public function render($templateId, $params = null, $locale = null, $format = MailServiceInterface::FORMAT_HTML)
     {
-        return $this->getRepository()->fetchById($id);
+        // TODO: Implement render() method.
     }
 
     /**
-     * @param \MCNEmail\Entity\Template $entity
+     * @param string $templateId
+     *
+     * @return bool
      */
-    public function save(TemplateEntity $entity)
+    public function has($templateId)
     {
-        if (! $this->objectManager->contains($entity)) {
-
-            $this->objectManager->persist($entity);
-        }
-
-        // TinyMCE removes html and body tags
-        $entity->setTemplate(sprintf('<html><body>%s</body></html>', $entity->getTemplate()));
-        $this->objectManager->flush();
+        // TODO: Implement has() method.
     }
 
     /**
-     * @param string $name
-     * @param array  $params
+     * @param string                  $templateId
+     * @param null|\Traversable|array $params
+     *
+     * @throws Exception\RuntimeException If the template already exists
      *
      * @return void
      */
-    public function create($name, array $params)
+    public function create($templateId, array $params = array())
     {
-        $entity = new TemplateEntity();
-        $entity->fromArray(
-            array(
-                'name'      => $name,
-                'variables' => $params
-            )
-        );
-
-        $this->objectManager->persist($entity);
-        $this->objectManager->flush();
+        // TODO: Implement create() method.
     }
 
-
     /**
-     * @param array $options
+     * Update the template parameters next time it's rendered
      *
-     * @return \Zend\Paginator\Paginator
+     * The next time a template is rendered it should update the update the params.
+     *
+     * @param string $templateId
+     *
+     * @throws Exception\TemplateNotFoundException
+     *
+     * @return void
      */
-    public function fetchAll(array $options)
+    public function templateRequestNewParams($templateId)
     {
-        return $this->getRepository()->fetchAll($options);
+        // TODO: Implement templateRequestNewParams() method.
     }
 }

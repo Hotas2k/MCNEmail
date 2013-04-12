@@ -93,6 +93,26 @@ class EmailTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @group params
+     */
+    public function testSend_HandlesParamsBeingAnIterator()
+    {
+        $params = new \ArrayIterator(array('hello', 'world'));
+
+        $this->templateService
+            ->expects($this->once())
+            ->method('render')
+            ->with('tpl', $this->callback(function($p) use($params) {
+
+                $diff = array_diff($p, array('hello', 'world'));
+
+                return empty($diff);
+            }));
+
+        $this->service->send('test', 'tpl', $params);
+    }
+
+    /**
      *
      */
     public function testSend_CreatesIfTemplateIsMissing()
