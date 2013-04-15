@@ -39,7 +39,7 @@ class Module
      */
     public function getConfig()
     {
-        return include_once __DIR__ . '/config/module.config.php';
+        return include __DIR__ . '/config/module.config.php';
     }
 
     /**
@@ -56,6 +56,13 @@ class Module
 
                     return new Service\Template(
                         $sm->get('doctrine.entitymanager.ormdefault')
+                    );
+                },
+
+                'mcn.service.email' => function ($sm) {
+
+                    return new Service\Email(
+                        $sm->get('mcn.service.email.template')
                     );
                 }
             )

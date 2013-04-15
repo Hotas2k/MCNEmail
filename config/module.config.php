@@ -40,7 +40,6 @@
  */
 
 return array(
-
     'MCNEmail' => array(
 
     ),
@@ -50,7 +49,7 @@ return array(
             'email_annotation_driver' => array(
                 'class'     => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'paths'     => array(
-                    'module/MCNEmail/src/MCNEmail/Entity/',
+                    'devmodule/MCNEmail/src/MCNEmail/Entity/',
                 ),
             ),
 
@@ -59,26 +58,6 @@ return array(
                     'MCNEmail\Entity' => 'email_annotation_driver'
                 )
             )
-        )
-    ),
-
-    'view_manager' => array(
-        'template_map' => array(
-            'mcn-email/template/list' => __DIR__ . '/../view/template/list.phtml',
-            'mcn-email/template/edit' => __DIR__ . '/../view/template/edit.phtml'
-        )
-    ),
-
-    'service_manager' => array(
-
-        'factories' => array(
-
-            // templates
-            'mcn.form.email.template'     => 'MCNEmail\Form\Factory\Template',
-
-            // services
-            'mcn.service.email'           => 'MCNEmail\Factory\EmailFactory',
-            'mcn.service.email.transport' => 'MCNEmail\Factory\EmailTransportFactory'
         )
     )
 );
