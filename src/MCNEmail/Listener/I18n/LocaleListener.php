@@ -39,25 +39,71 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-return array(
-    'MCNEmail' => array(
+namespace MCNEmail\Listener\I18n;
 
-    ),
+use MCNEmail\Service\TemplateInterface;
+use Zend\EventManager\Event;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\ListenerAggregateInterface;
+use Zend\EventManager\ListenerAggregateTrait;
+use MCNI18n\Options\Locale as LocaleOptions;
 
-    'doctrine' => array(
-        'driver' => array(
-            'email_annotation_driver' => array(
-                'class'     => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'paths'     => array(
-                    __DIR__ . '/../src/MCNEmail/Entity/',
-                ),
-            ),
+/**
+ * Class LocaleListener
+ * @package MCNEmail\Listener\I18n
+ */
+class LocaleListener implements ListenerAggregateInterface
+{
+    use ListenerAggregateTrait;
 
-            'orm_default' => array(
-                'drivers' => array(
-                    'MCNEmail\Entity' => 'email_annotation_driver'
-                )
-            )
-        )
-    )
-);
+    /**
+     * @var \MCNEmail\Service\TemplateInterface
+     */
+    protected $service;
+
+    /**
+     * @var \MCNI18n\Options\Locale
+     */
+    protected $options;
+
+    /**
+     * @param TemplateInterface $service
+     * @param LocaleOptions     $options
+     */
+    public function __construct(TemplateInterface $service, LocaleOptions $options)
+    {
+        $this->service = $service;
+        $this->options = $options;
+    }
+
+    /**
+     * Attach one or more listeners
+     *
+     * Implementors may add an optional $priority argument; the EventManager
+     * implementation will pass this to the aggregate.
+     *
+     * @param EventManagerInterface $events
+     *
+     * @return void
+     */
+    public function attach(EventManagerInterface $events)
+    {
+        $this->listeners[] = $events->attach('persist.post', array('addTemplatesForNewLocale'));
+        $this->listeners[] = $events->attach('remove.pre', array('removeTemplatesForLocale'));
+    }
+
+    /**
+     * @param Event $e
+     */
+    public function addTemplatesForLocale(Event $e)
+    {
+
+    }
+
+    /**
+     * @param Event $e
+     */
+    public function removeTemplatesForLocale(Event $e)
+    {
+    }
+}

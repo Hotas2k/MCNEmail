@@ -62,7 +62,8 @@ class Module
                 'mcn.service.email' => function ($sm) {
 
                     return new Service\Email(
-                        $sm->get('mcn.service.email.template')
+                        $sm->get('mcn.service.email.template'),
+                        new Options\EmailOptions($sm->get('Config')['MCNEmail'])
                     );
                 }
             )
@@ -77,16 +78,6 @@ class Module
      */
     public function getControllerConfig()
     {
-        return array(
-            'factories' => array(
-
-                'mcn.email.template' => function (ControllerManager $sm) {
-
-                    return new Controller\TemplateController(
-                        $sm->getServiceLocator()->get('mcn.service.email.template')
-                    );
-                }
-            )
-        );
+        return array();
     }
 }

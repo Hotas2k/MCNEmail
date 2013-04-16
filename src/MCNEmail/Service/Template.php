@@ -41,6 +41,7 @@
 
 namespace MCNEmail\Service;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use MCNStdlib\Interfaces\MailServiceInterface;
 
 /**
@@ -49,6 +50,27 @@ use MCNStdlib\Interfaces\MailServiceInterface;
  */
 class Template implements TemplateInterface
 {
+    /**
+     * @var \Doctrine\Common\Persistence\ObjectManager
+     */
+    protected $objectManager;
+
+    /**
+     * @param ObjectManager $objectManager
+     */
+    public function __construct(ObjectManager $objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectRepository
+     */
+    protected function getRepository()
+    {
+        return $this->objectManager->getRepository('MCNEmail\Entity\Template');
+    }
+
     /**
      * Render a template
      *
@@ -61,7 +83,7 @@ class Template implements TemplateInterface
      */
     public function render($templateId, $params = null, $locale = null, $format = MailServiceInterface::FORMAT_HTML)
     {
-        // TODO: Implement render() method.
+
     }
 
     /**
