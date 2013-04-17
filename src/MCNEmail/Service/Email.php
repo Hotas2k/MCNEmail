@@ -121,7 +121,7 @@ class Email implements MailServiceInterface
     {
         if ($params === null) {
             $params = array();
-        } else if ($params instanceof Traversable) {
+        } elseif ($params instanceof Traversable) {
             $params = iterator_to_array($params);
         }
 

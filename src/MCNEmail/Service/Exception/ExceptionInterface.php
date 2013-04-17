@@ -39,12 +39,12 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-/**
- * @namespace
- */
 namespace MCNEmail\Service\Exception;
 
+/**
+ * Class ExceptionInterface
+ * @package MCNEmail\Service\Exception
+ */
 interface ExceptionInterface
 {
-
 }
