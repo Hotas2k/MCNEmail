@@ -39,31 +39,12 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-return array(
-    'MCNEmail' => array(
+namespace MCNEmail\Factory\Exception;
 
-        'engine'         => 'twig',
-        'engine_options' => array(),
-
-        'transport' => array(
-            'type' => 'sendmail'
-        )
-    ),
-
-    'doctrine' => array(
-        'driver' => array(
-            'email_annotation_driver' => array(
-                'class'     => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'paths'     => array(
-                    __DIR__ . '/../src/MCNEmail/Entity/',
-                ),
-            ),
-
-            'orm_default' => array(
-                'drivers' => array(
-                    'MCNEmail\Entity' => 'email_annotation_driver'
-                )
-            )
-        )
-    )
-);
+/**
+ * Class ExceptionInterface
+ * @package MCNEmail\Factory\Exception
+ */
+interface ExceptionInterface
+{
+}

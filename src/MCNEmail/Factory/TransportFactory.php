@@ -39,31 +39,57 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-return array(
-    'MCNEmail' => array(
+namespace MCNEmail\Factory;
 
-        'engine'         => 'twig',
-        'engine_options' => array(),
+use Zend\Mail\Transport;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-        'transport' => array(
-            'type' => 'sendmail'
-        )
-    ),
+/**
+ * @category MCNEmail
+ * @package Factory
+ */
+class EmailTransportFactory implements FactoryInterface
+{
+    /**
+     * @throws Exception\InvalidArgumentException
+     *
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+     *
+     * @return \Zend\Mail\Transport\TransportInterface
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $configuration = $serviceLocator->get('Config')['MCNEmail']['transport'];
 
-    'doctrine' => array(
-        'driver' => array(
-            'email_annotation_driver' => array(
-                'class'     => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'paths'     => array(
-                    __DIR__ . '/../src/MCNEmail/Entity/',
-                ),
-            ),
+        // If no type has been specified we default to send amil
+        $configuration['type'] = isSet($configuration['type']) ? $configuration['type'] : 'sendmail';
 
-            'orm_default' => array(
-                'drivers' => array(
-                    'MCNEmail\Entity' => 'email_annotation_driver'
-                )
-            )
-        )
-    )
-);
+        // Handle some stuff
+        switch(strtolower($configuration['type']))
+        {
+            case 'smtp':
+                if (! isSet($configuration['options'])) {
+
+                    throw new Exception\InvalidArgumentException(
+                        sprintf('The SMTP transport and cannot be instantiated without passing any options')
+                    );
+                }
+
+                $options   = new Transport\SmtpOptions($configuration['options']);
+                $transport = new Transport\Smtp($options);
+                break;
+
+            case 'sendmail':
+                $transport = new Transport\Sendmail();
+                break;
+
+            default:
+                throw new Exception\InvalidArgumentException(
+                    sprintf('Unknown transport specified "%s".', $configuration['transport']['type'])
+                );
+        }
+
+        return $transport;
+    }
+}
