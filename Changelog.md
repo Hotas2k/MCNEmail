@@ -1,7 +1,3 @@
-# 2.0.0
-Major refactor to use MCN\Stdlib and written tests so it can be published
+# 2013-04-17
 
-# 1.0.0
-
-Implemented mustache instead of custom rendering logic
-Refactor to lasted coding standard
+* Implemented the template service and support for different engines, by default will ship with Twig and maybe mustache
