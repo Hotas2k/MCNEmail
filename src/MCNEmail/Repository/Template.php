@@ -52,6 +52,7 @@ use MCNEmail\Service\Template as TemplateService;
 class Template extends EntityRepository implements TemplateInterface
 {
     /**
+     * @codeCoverageIgnore
      * @inheritdoc
      */
     public function has($id, $locale)
@@ -77,6 +78,8 @@ class Template extends EntityRepository implements TemplateInterface
 
     /**
      * Get a template
+     *
+     * @codeCoverageIgnore
      *
      * @param string $id
      * @param string $locale

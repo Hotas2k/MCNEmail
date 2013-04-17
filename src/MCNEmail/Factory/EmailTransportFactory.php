@@ -66,7 +66,7 @@ class EmailTransportFactory implements FactoryInterface
         $configuration['type'] = isSet($configuration['type']) ? $configuration['type'] : 'sendmail';
 
         // Handle some stuff
-        switch(strtolower($configuration['type']))
+        switch (strtolower($configuration['type']))
         {
             case 'smtp':
                 if (! isSet($configuration['options'])) {

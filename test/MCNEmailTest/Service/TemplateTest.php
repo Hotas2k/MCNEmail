@@ -162,7 +162,7 @@ class TemplateTest extends PHPUnit_Framework_TestCase
         $this->objectManager
             ->expects($this->once())
             ->method('flush');
-        
+
         $this->service->create('id', 'en_US', array('foo'));
     }
 }
