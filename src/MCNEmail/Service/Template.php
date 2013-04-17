@@ -86,7 +86,7 @@ class Template implements TemplateInterface
     /**
      * @inheritdoc
      */
-    public function render($templateId, $locale, $params = null, $format = MailServiceInterface::FORMAT_HTML)
+    public function render($templateId, $locale, array $params = array(), $format = MailServiceInterface::FORMAT_HTML)
     {
         $template = $this->getRepository()->get($templateId, $locale, $format);
 
@@ -112,18 +112,8 @@ class Template implements TemplateInterface
     /**
      * @inheritdoc
      */
-    public function create($templateId, $locale, $params = null, $format = MailServiceInterface::FORMAT_HTML)
+    public function create($templateId, $locale, array $params = array(), $format = MailServiceInterface::FORMAT_HTML)
     {
-        if ($params instanceof Traversable) {
-            $params = iterator_to_array($params);
-        }
-
-        if (! is_array($params)) {
-            throw new Exception\InvalidArgumentException(
-                'Second parameter params should be null, array or an instance of \Traversable'
-            );
-        }
-
         $entity = new TemplateEntity();
         $entity->fromArray(
             array(

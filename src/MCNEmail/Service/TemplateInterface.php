@@ -54,12 +54,12 @@ interface TemplateInterface
      *
      * @param string                  $templateId
      * @param string                  $locale
-     * @param null|\Traversable|array $params
+     * @param null|array $params
      * @param string                  $format
      *
      * @return string[]
      */
-    public function render($templateId, $locale, $params = null, $format = MailServiceInterface::FORMAT_HTML);
+    public function render($templateId, $locale, array $params = array(), $format = MailServiceInterface::FORMAT_HTML);
 
     /**
      * Check if a template exists
@@ -76,12 +76,12 @@ interface TemplateInterface
      *
      * @param string                  $templateId
      * @param null                    $locale
-     * @param null|\Traversable|array $params
+     * @param null|array $params
      * @param string                  $format
      *
      * @return \MCNEmail\Entity\Template
      */
-    public function create($templateId, $locale, $params = null, $format = MailServiceInterface::FORMAT_HTML);
+    public function create($templateId, $locale, array $params = array(), $format = MailServiceInterface::FORMAT_HTML);
 
     /**
      * Update the template parameters next time it's rendered
