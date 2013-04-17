@@ -39,41 +39,34 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-return array(
-    'MCNEmail' => array(
+namespace MCNEmail\Factory;
 
-        'template' => array(
+use MCNEmail\Options\EmailOptions;
+use MCNEmail\Service\Email;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-            'engine'         => 'twig',
-            'engine_options' => array(),
-        ),
+/**
+ * Class EmailServiceFactory
+ * @package MCNEmail\Factory
+ */
+class EmailServiceFactory implements FactoryInterface
+{
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $configuration = $serviceLocator->get('Config')['MCNEmail']['service'];
 
-        'service' => array(
+        $options = new EmailOptions($configuration);
+        $service = new Email($serviceLocator->get('mcn.service.email.template'), $options);
+        $service->setTransport($serviceLocator->get('mcn.email.transport'));
 
-
-        ),
-
-        'transport' => array(
-
-            'type'    => 'sendmail',
-            'options' => array()
-        )
-    ),
-
-    'doctrine' => array(
-        'driver' => array(
-            'email_annotation_driver' => array(
-                'class'     => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'paths'     => array(
-                    __DIR__ . '/../src/MCNEmail/Entity/',
-                ),
-            ),
-
-            'orm_default' => array(
-                'drivers' => array(
-                    'MCNEmail\Entity' => 'email_annotation_driver'
-                )
-            )
-        )
-    )
-);
+        return $service;
+    }
+}

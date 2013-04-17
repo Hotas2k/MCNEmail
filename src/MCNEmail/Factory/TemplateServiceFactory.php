@@ -39,41 +39,36 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-return array(
-    'MCNEmail' => array(
+namespace MCNEmail\Factory;
 
-        'template' => array(
+use MCNEmail\Service\Template;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-            'engine'         => 'twig',
-            'engine_options' => array(),
-        ),
+/**
+ * Class TemplateServiceFactory
+ * @package MCNEmail\Factory
+ */
+class TemplateServiceFactory implements FactoryInterface
+{
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $config = $serviceLocator->get('Config')['MCNEmail']['template'];
 
-        'service' => array(
+        $engineClassName        = 'MCNEmail\\Service\\Template\\Engine\\' . ucfirst($config['engine']);
+        $engineOptionsClassName = 'MCNEmail\\Options\\Template\\Engine\\' . ucfirst($config['engine']) . 'Options';
 
+        $options       = new $engineOptionsClassName($config['engine_options']);
+        $engine        = new $engineClassName($options);
+        $objectManager = $serviceLocator->get('doctrine.objectmanager');
 
-        ),
-
-        'transport' => array(
-
-            'type'    => 'sendmail',
-            'options' => array()
-        )
-    ),
-
-    'doctrine' => array(
-        'driver' => array(
-            'email_annotation_driver' => array(
-                'class'     => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'paths'     => array(
-                    __DIR__ . '/../src/MCNEmail/Entity/',
-                ),
-            ),
-
-            'orm_default' => array(
-                'drivers' => array(
-                    'MCNEmail\Entity' => 'email_annotation_driver'
-                )
-            )
-        )
-    )
-);
+        return new Template($objectManager, $engine);
+    }
+}

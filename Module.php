@@ -52,21 +52,10 @@ class Module
     {
         return array(
             'factories' => array(
-                'mcn.service.email.template' => function ($sm) {
+                'mcn.service.email'          => 'MCNEmail\Factory\EmailServiceFactory',
+                'mcn.service.email.template' => 'MCNEmail\Factory\TemplateServiceFactory',
 
-                    return new Service\Template(
-                        $sm->get('doctrine.entitymanager.ormdefault'),
-                        new Twig()
-                    );
-                },
-
-                'mcn.service.email' => function ($sm) {
-
-                    return new Service\Email(
-                        $sm->get('mcn.service.email.template'),
-                        new Options\EmailOptions($sm->get('Config')['MCNEmail'])
-                    );
-                }
+                'mcn.email.transport' => 'MCNEmail\Factory\EmailTransportFactory',
             )
         );
     }
