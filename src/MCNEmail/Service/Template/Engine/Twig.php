@@ -52,6 +52,7 @@ use Twig_Loader_String;
  */
 class Twig implements EngineInterface
 {
+
     /**
      * Constructs a twig engine from the given options
      *

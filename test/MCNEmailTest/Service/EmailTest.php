@@ -103,7 +103,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->templateService
             ->expects($this->once())
             ->method('render')
-            ->with('tpl', $this->callback(function($p) use($params) {
+            ->with('tpl', Locale::getDefault(), $this->callback(function($p) use($params) {
 
                 $diff = array_diff($p, array('hello', 'world'));
 
@@ -127,7 +127,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->templateService
             ->expects($this->once())
             ->method('create')
-            ->with('tpl', array(), Locale::getDefault(), 'html');
+            ->with('tpl', Locale::getDefault(), array(), 'html');
 
         $this->service->send('test', 'tpl');
     }
