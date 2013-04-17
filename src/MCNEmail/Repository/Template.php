@@ -66,14 +66,7 @@ class Template extends EntityRepository implements TemplateInterface
                     )
                 );
 
-        try {
-
-            return (bool) $builder->getQuery()->getSingleResult();
-
-        } catch (NoResultException $e) {
-
-            return false;
-        }
+        return $builder->getQuery()->getOneOrNullResult();
     }
 
     /**
