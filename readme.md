@@ -1,6 +1,6 @@
 # MCNEmail
 
-[![Build Status](https://travis-ci.org/[macnibblet]/[MCNEmail].png)](https://travis-ci.org/[macnibblet]/[MCNEmail])
+[![Build Status](https://travis-ci.org/macnibblet/MCNEmail.png)](https://travis-ci.org/macnibblet/MCNEmail)
 
 ## Installation
 
