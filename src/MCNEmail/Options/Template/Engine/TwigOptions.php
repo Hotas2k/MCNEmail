@@ -39,60 +39,97 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-namespace MCNEmail\Service;
+namespace MCNEmail\Options\Template\Engine;
 
-use MCNStdlib\Interfaces\MailServiceInterface;
+use Zend\Stdlib\AbstractOptions;
 
 /**
- * Class TemplateInterface
- * @package MCNEmail\Service
+ * Class TwigOptions
+ * @package MCNEmail\Options\Template\Engine
  */
-interface TemplateInterface
+class TwigOptions extends AbstractOptions
 {
     /**
-     * Render a template
-     *
-     * @param string                  $templateId
-     * @param string                  $locale
-     * @param null|\Traversable|array $params
-     * @param string                  $format
-     *
-     * @return string[]
+     * @var bool
      */
-    public function render($templateId, $locale, $params = null,  $format = MailServiceInterface::FORMAT_HTML);
+    protected $debug = false;
 
     /**
-     * Check if a template exists
-     *
-     * @param string $templateId
-     * @param string $locale
-     *
-     * @return bool
+     * @var string
      */
-    public function has($templateId, $locale);
+    protected $charset = 'utf8';
 
     /**
-     * Create a new template
-     *
-     * @param string                  $templateId
-     * @param null                    $locale
-     * @param null|\Traversable|array $params
-     * @param string                  $format
-     *
-     * @return \MCNEmail\Entity\Template
+     * @var string
      */
-    public function create($templateId, $locale, $params = null,  $format = MailServiceInterface::FORMAT_HTML);
+    protected $cache = 'data/cache/twig';
 
     /**
-     * Update the template parameters next time it's rendered
-     *
-     * The next time a template is rendered it should update the update the params.
-     *
-     * @param string $templateId
-     *
-     * @throws Exception\TemplateNotFoundException
-     *
-     * @return void
+     * @var string
      */
-    //public function templateRequestNewParams($templateId);
+    protected $autoescape = 'html';
+
+    /**
+     * @param string $autoescape
+     */
+    public function setAutoescape($autoescape)
+    {
+        $this->autoescape = $autoescape;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAutoescape()
+    {
+        return $this->autoescape;
+    }
+
+    /**
+     * @param string $cache
+     */
+    public function setCache($cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     * @param string $charset
+     */
+    public function setCharset($charset)
+    {
+        $this->charset = $charset;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCharset()
+    {
+        return $this->charset;
+    }
+
+    /**
+     * @param boolean $debug
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getDebug()
+    {
+        return $this->debug;
+    }
 }

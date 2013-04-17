@@ -52,9 +52,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="mcn_email_templates", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_name", columns={ "name" })
- * })
+ * @ORM\Table(name="mcn_email_templates")
  *
  * @Annotation\Name("email.template")
  */
@@ -63,40 +61,28 @@ class Template extends AbstractEntity
     use TimestampableTrait;
 
     /**
-     * @var integer
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     *
-     * @Annotation\Exclude
-     */
-    protected $id;
-
-    /**
      * @var string
      *
+     * @ORM\Id
      * @ORM\Column(type="string")
      *
      * @Annotation\Attributes({ "disabled" : "disabled" })
      */
-    protected $name;
+    protected $id;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    protected $enabled = false;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", nullable=true)
-     *
-     * @Annotation\AllowEmpty
+     * @ORM\Column(length=6, nullable=true)
      */
-    protected $bcc;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text")
-     */
-    protected $description;
+    protected $locale = null;
 
     /**
      * @var array
@@ -105,7 +91,7 @@ class Template extends AbstractEntity
      *
      * @Annotation\Exclude
      */
-    protected $variables;
+    protected $params;
 
     /**
      * @var string
@@ -119,34 +105,34 @@ class Template extends AbstractEntity
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    protected $template = null;
+    protected $template;
 
     /**
-     * @return bool
+     * @param boolean $enabled
      */
-    public function isValid()
+    public function setEnabled($enabled)
     {
-        return ($this->subject !== null && $this->template !== null);
+        $this->enabled = $enabled;
     }
 
     /**
-     * @param string $description
+     * @return boolean
      */
-    public function setDescription($description)
+    public function isEnabled()
     {
-        $this->description = $description;
+        return $this->enabled;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
      * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @return int
      */
     public function getId()
     {
@@ -154,19 +140,19 @@ class Template extends AbstractEntity
     }
 
     /**
-     * @param string $name
+     * @param string $locale
      */
-    public function setName($name)
+    public function setLocale($locale)
     {
-        $this->name = $name;
+        $this->locale = $locale;
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getLocale()
     {
-        return $this->name;
+        return $this->locale;
     }
 
     /**
@@ -188,17 +174,17 @@ class Template extends AbstractEntity
     /**
      * @param array $variables
      */
-    public function setVariables($variables)
+    public function setParams(array $variables)
     {
-        $this->variables = $variables;
+        $this->params = $variables;
     }
 
     /**
      * @return array
      */
-    public function getVariables()
+    public function getParams()
     {
-        return $this->variables;
+        return $this->params;
     }
 
     /**
@@ -215,21 +201,5 @@ class Template extends AbstractEntity
     public function getSubject()
     {
         return $this->subject;
-    }
-
-    /**
-     * @param string $bcc
-     */
-    public function setBcc($bcc)
-    {
-        $this->bcc = $bcc;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBcc()
-    {
-        return $this->bcc;
     }
 }

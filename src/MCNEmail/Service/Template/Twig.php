@@ -39,60 +39,36 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-namespace MCNEmail\Service;
+namespace MCNEMail\Service\Template;
 
-use MCNStdlib\Interfaces\MailServiceInterface;
+use MCNEmail\Options\Template\Engine\TwigOptions;
+use Twig_Environment;
+use Twig_Loader_String;
 
 /**
- * Class TemplateInterface
- * @package MCNEmail\Service
+ * Class TwigEngine
+ * @package MCNEMail\Service\Template
  */
-interface TemplateInterface
+class TwigEngine implements EngineInterface
 {
     /**
-     * Render a template
+     * Constructs a twig engine from the given options
      *
-     * @param string                  $templateId
-     * @param string                  $locale
-     * @param null|\Traversable|array $params
-     * @param string                  $format
-     *
-     * @return string[]
+     * @param TwigOptions $options
      */
-    public function render($templateId, $locale, $params = null,  $format = MailServiceInterface::FORMAT_HTML);
+    public function __construct(TwigOptions $options = null)
+    {
+        $options = ($options === null) ? new TwigOptions() : $options;
+        $loader = new Twig_Loader_String();
+
+        $this->twig = new Twig_Environment($loader, $options->toArray());
+    }
 
     /**
-     * Check if a template exists
-     *
-     * @param string $templateId
-     * @param string $locale
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function has($templateId, $locale);
-
-    /**
-     * Create a new template
-     *
-     * @param string                  $templateId
-     * @param null                    $locale
-     * @param null|\Traversable|array $params
-     * @param string                  $format
-     *
-     * @return \MCNEmail\Entity\Template
-     */
-    public function create($templateId, $locale, $params = null,  $format = MailServiceInterface::FORMAT_HTML);
-
-    /**
-     * Update the template parameters next time it's rendered
-     *
-     * The next time a template is rendered it should update the update the params.
-     *
-     * @param string $templateId
-     *
-     * @throws Exception\TemplateNotFoundException
-     *
-     * @return void
-     */
-    //public function templateRequestNewParams($templateId);
+    public function render($template, array $params = array())
+    {
+        return $this->twig->render($template, $params);
+    }
 }

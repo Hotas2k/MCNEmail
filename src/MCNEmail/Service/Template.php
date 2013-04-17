@@ -41,8 +41,12 @@
 
 namespace MCNEmail\Service;
 
+use MCNEmail\Entity\Template as TemplateEntity;
 use Doctrine\Common\Persistence\ObjectManager;
+use MCNEmail\Service\Template\EngineInterface;
 use MCNStdlib\Interfaces\MailServiceInterface;
+use Traversable;
+use Twig_Environment;
 
 /**
  * Class Template
@@ -51,20 +55,29 @@ use MCNStdlib\Interfaces\MailServiceInterface;
 class Template implements TemplateInterface
 {
     /**
+     * @var Template\EngineInterface
+     */
+    protected $engine;
+
+    /**
      * @var \Doctrine\Common\Persistence\ObjectManager
      */
     protected $objectManager;
 
     /**
-     * @param ObjectManager $objectManager
+     * Constructor
+     *
+     * @param ObjectManager            $objectManager
+     * @param Template\EngineInterface $engine
      */
-    public function __construct(ObjectManager $objectManager)
+    public function __construct(ObjectManager $objectManager, EngineInterface $engine)
     {
+        $this->engine        = $engine;
         $this->objectManager = $objectManager;
     }
 
     /**
-     * @return \Doctrine\Common\Persistence\ObjectRepository
+     * @return \MCNEmail\Repository\TemplateInterface
      */
     protected function getRepository()
     {
@@ -72,56 +85,58 @@ class Template implements TemplateInterface
     }
 
     /**
-     * Render a template
-     *
-     * @param string                  $templateId
-     * @param null|\Traversable|array $params
-     * @param null|string             $locale
-     * @param string                  $format
-     *
-     * @return string[]
+     * @inheritdoc
      */
-    public function render($templateId, $params = null, $locale = null, $format = MailServiceInterface::FORMAT_HTML)
+    public function render($templateId, $locale, $params = null, $format = MailServiceInterface::FORMAT_HTML)
     {
+        $template = $this->getRepository()->get($templateId, $locale, $format);
 
+        if (! $template) {
+
+            throw new Exception\TemplateNotFoundException;
+        }
+
+        return array(
+            'subject' => $this->engine->render($template->getSubject(), $params),
+            'body'    => $this->engine->render($template->getTemplate(), $params)
+        );
     }
 
     /**
-     * @param string $templateId
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function has($templateId)
+    public function has($templateId, $locale)
     {
-        // TODO: Implement has() method.
+        return $this->getRepository()->has($templateId, $locale);
     }
 
     /**
-     * @param string                  $templateId
-     * @param null|\Traversable|array $params
-     *
-     * @throws Exception\RuntimeException If the template already exists
-     *
-     * @return void
+     * @inheritdoc
      */
-    public function create($templateId, array $params = array())
+    public function create($templateId, $locale, $params = null, $format = MailServiceInterface::FORMAT_HTML)
     {
-        // TODO: Implement create() method.
-    }
+        if ($params instanceof Traversable) {
+            $params = iterator_to_array($params);
+        }
 
-    /**
-     * Update the template parameters next time it's rendered
-     *
-     * The next time a template is rendered it should update the update the params.
-     *
-     * @param string $templateId
-     *
-     * @throws Exception\TemplateNotFoundException
-     *
-     * @return void
-     */
-    public function templateRequestNewParams($templateId)
-    {
-        // TODO: Implement templateRequestNewParams() method.
+        if (! is_array($params)) {
+            throw new Exception\InvalidArgumentException(
+                'Second parameter params should be null, array or an instance of \Traversable'
+            );
+        }
+
+        $entity = new TemplateEntity();
+        $entity->fromArray(
+            array(
+                'id'     => $templateId,
+                'params' => $params,
+                'locale' => $locale
+            )
+        );
+
+        $this->objectManager->persist($entity);
+        $this->objectManager->flush($entity);
+
+        return $entity;
     }
 }

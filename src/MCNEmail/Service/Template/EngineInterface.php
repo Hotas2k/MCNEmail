@@ -39,60 +39,21 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-namespace MCNEmail\Service;
-
-use MCNStdlib\Interfaces\MailServiceInterface;
+namespace MCNEmail\Service\Template;
 
 /**
- * Class TemplateInterface
- * @package MCNEmail\Service
+ * Class EngineInterface
+ * @package MCNEmail\Service\Template
  */
-interface TemplateInterface
+interface EngineInterface
 {
     /**
      * Render a template
      *
-     * @param string                  $templateId
-     * @param string                  $locale
-     * @param null|\Traversable|array $params
-     * @param string                  $format
+     * @param string $template
+     * @param array  $params
      *
-     * @return string[]
+     * @return string
      */
-    public function render($templateId, $locale, $params = null,  $format = MailServiceInterface::FORMAT_HTML);
-
-    /**
-     * Check if a template exists
-     *
-     * @param string $templateId
-     * @param string $locale
-     *
-     * @return bool
-     */
-    public function has($templateId, $locale);
-
-    /**
-     * Create a new template
-     *
-     * @param string                  $templateId
-     * @param null                    $locale
-     * @param null|\Traversable|array $params
-     * @param string                  $format
-     *
-     * @return \MCNEmail\Entity\Template
-     */
-    public function create($templateId, $locale, $params = null,  $format = MailServiceInterface::FORMAT_HTML);
-
-    /**
-     * Update the template parameters next time it's rendered
-     *
-     * The next time a template is rendered it should update the update the params.
-     *
-     * @param string $templateId
-     *
-     * @throws Exception\TemplateNotFoundException
-     *
-     * @return void
-     */
-    //public function templateRequestNewParams($templateId);
+    public function render($template, array $params = array());
 }

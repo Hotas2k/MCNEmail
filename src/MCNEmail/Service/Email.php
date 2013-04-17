@@ -41,6 +41,7 @@
 
 namespace MCNEmail\Service;
 
+use Locale;
 use MCNStdlib\Interfaces\MailServiceInterface;
 use Traversable;
 use Zend\Mail\Message as MailMessage;
@@ -124,26 +125,26 @@ class Email implements MailServiceInterface
             $params = iterator_to_array($params);
         }
 
-        if (! is_array($params)) {
+        if (!is_array($params)) {
 
             throw new Exception\InvalidArgumentException(
                 'Third argument params should be either null, array or traversable.'
             );
         }
 
-        if (! $this->templates->has($templateId)) {
+        $locale = ($locale === null) ? Locale::getDefault() : $locale;
 
-
+        if (!$this->templates->has($templateId, $locale)) {
             $this->templates->create($templateId, $params, $locale, $format);
         }
 
         list ($subject, $body) = $this->templates->render($templateId, $params, $locale, $format);
 
         $message = new MailMessage();
-        $message->setSubject($subject);
-        $message->setBody($body);
-
         $message->setEncoding($this->options->getEncoding());
+
+        $message->setBody($body);
+        $message->setSubject($subject);
 
         $message->setReplyTo($this->options->getReplyTo());
         $message->setFrom($this->options->getFrom());

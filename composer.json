@@ -13,10 +13,9 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
         "mcn/stdlib": "dev-master",
+        "twig/twig": "v1.12.3",
         "zendframework/zendframework": "2.*",
-        "mustache/mustache": "2.0.*"
     },
     "autoload": {
         "psr-0": {

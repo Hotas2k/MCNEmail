@@ -42,13 +42,54 @@
 namespace MCNEmail\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
 use MCNEmail\Service\Template as TemplateService;
 
 /**
  * Class Template
  * @package MCNEmail\Repository
  */
-class Template extends EntityRepository
+class Template extends EntityRepository implements TemplateInterface
 {
+    /**
+     * @inheritdoc
+     */
+    public function has($id, $locale)
+    {
+        $builder = $this->createQueryBuilder('template');
+        $builder->where('template.id = :id AND locale = :locale')
+                ->setParameters(
+                    array(
+                        'id'     => $id,
+                        'locale' => $locale
+                    )
+                );
 
+        try {
+
+            return (bool) $builder->getQuery()->getSingleResult();
+
+        } catch (NoResultException $e) {
+
+            return false;
+        }
+    }
+
+    /**
+     * Get a template
+     *
+     * @param string $id
+     * @param string $locale
+     *
+     * @return \MCNEmail\Entity\Template|null
+     */
+    public function get($id, $locale)
+    {
+        return $this->findOneBy(
+            array(
+                'id'     => $id,
+                'locale' => $locale
+            )
+        );
+    }
 }

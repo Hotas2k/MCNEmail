@@ -42,6 +42,8 @@
 return array(
     'MCNEmail' => array(
 
+        'engine'         => 'twig',
+        'engine_options' => array()
     ),
 
     'doctrine' => array(

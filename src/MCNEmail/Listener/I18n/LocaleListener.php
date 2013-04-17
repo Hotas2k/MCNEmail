@@ -68,12 +68,10 @@ class LocaleListener implements ListenerAggregateInterface
 
     /**
      * @param TemplateInterface $service
-     * @param LocaleOptions     $options
      */
-    public function __construct(TemplateInterface $service, LocaleOptions $options)
+    public function __construct(TemplateInterface $service)
     {
         $this->service = $service;
-        $this->options = $options;
     }
 
     /**
@@ -97,7 +95,19 @@ class LocaleListener implements ListenerAggregateInterface
      */
     public function addTemplatesForLocale(Event $e)
     {
+        /**
+         * @var $localeEntity \MCNI18n\Entity\Locale
+         * @var $localeService \MCNI18n\Service\Locale
+         */
+        $localeEntity  = $e->getParam('locale');
+        $localeService = $e->getTarget();
 
+        $templates = $this->service->fetchAll($localeService->getOptions()->getDefaultLocale());
+
+        foreach ($templates as $template) {
+
+            $this->service->create($template->getId(), $template->getVariables(), $localeEntity->getLocale());
+        }
     }
 
     /**
