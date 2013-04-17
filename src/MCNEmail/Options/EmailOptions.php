@@ -51,6 +51,11 @@ use Zend\Stdlib\AbstractOptions;
 class EmailOptions extends AbstractOptions
 {
     /**
+     * @var array
+     */
+    protected $bcc = array();
+
+    /**
      * @var string
      */
     protected $default_transport = 'Sendmail';
@@ -70,6 +75,21 @@ class EmailOptions extends AbstractOptions
      */
     protected $encoding = 'utf-8';
 
+    /**
+     * @param array $bcc
+     */
+    public function setBcc(array $bcc)
+    {
+        $this->bcc = $bcc;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBcc()
+    {
+        return $this->bcc;
+    }
 
     /**
      * @param string $default_transport

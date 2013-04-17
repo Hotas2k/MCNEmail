@@ -41,6 +41,7 @@
 
 namespace MCNEmailTest\Service;
 
+use Locale;
 use MCNEmail\Service\Email;
 use MCNEmail\Options\EmailOptions;
 use Zend\Mail\Message;
@@ -126,7 +127,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
         $this->templateService
             ->expects($this->once())
             ->method('create')
-            ->with('tpl', array(), null, 'html');
+            ->with('tpl', array(), Locale::getDefault(), 'html');
 
         $this->service->send('test', 'tpl');
     }

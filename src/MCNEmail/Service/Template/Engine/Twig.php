@@ -39,9 +39,10 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-namespace MCNEMail\Service\Template;
+namespace MCNEMail\Service\Template\Engine;
 
 use MCNEmail\Options\Template\Engine\TwigOptions;
+use MCNEmail\Service\Template\EngineInterface;
 use Twig_Environment;
 use Twig_Loader_String;
 
