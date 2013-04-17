@@ -97,7 +97,6 @@ class Email implements MailServiceInterface
     public function getTransport()
     {
         if ($this->transport === null) {
-
             $class = '\\Zend\Mail\Transport\\' . $this->options->getDefaultTransport();
             $this->transport = new $class();
         }
@@ -135,10 +134,10 @@ class Email implements MailServiceInterface
         $locale = ($locale === null) ? Locale::getDefault() : $locale;
 
         if (!$this->templates->has($templateId, $locale)) {
-            $this->templates->create($templateId, $params, $locale, $format);
+            $this->templates->create($templateId, $locale, $params, $format);
         }
 
-        list ($subject, $body) = $this->templates->render($templateId, $params, $locale, $format);
+        list ($subject, $body) = $this->templates->render($templateId, $locale, $params,  $format);
 
         $message = new MailMessage();
         $message->setEncoding($this->options->getEncoding());

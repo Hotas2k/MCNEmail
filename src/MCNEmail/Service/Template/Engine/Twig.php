@@ -39,7 +39,7 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-namespace MCNEMail\Service\Template\Engine;
+namespace MCNEmail\Service\Template\Engine;
 
 use MCNEmail\Options\Template\Engine\TwigOptions;
 use MCNEmail\Service\Template\EngineInterface;
@@ -50,7 +50,7 @@ use Twig_Loader_String;
  * Class TwigEngine
  * @package MCNEMail\Service\Template
  */
-class TwigEngine implements EngineInterface
+class Twig implements EngineInterface
 {
     /**
      * Constructs a twig engine from the given options

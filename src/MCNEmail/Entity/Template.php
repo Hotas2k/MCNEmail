@@ -50,9 +50,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Template
  * @package MCNEmail\Entity
  *
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="mcn_email_templates")
+ * @ORM\Entity(repositoryClass="MCNEmail\Repository\Template")
+ * @ORM\HasLifecycleCallbacks
  *
  * @Annotation\Name("email.template")
  */
@@ -80,6 +80,7 @@ class Template extends AbstractEntity
     /**
      * @var string
      *
+     * @ORM\Id
      * @ORM\Column(length=6, nullable=true)
      */
     protected $locale = null;

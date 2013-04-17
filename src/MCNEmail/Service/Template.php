@@ -46,7 +46,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use MCNEmail\Service\Template\EngineInterface;
 use MCNStdlib\Interfaces\MailServiceInterface;
 use Traversable;
-use Twig_Environment;
 
 /**
  * Class Template
@@ -97,8 +96,8 @@ class Template implements TemplateInterface
         }
 
         return array(
-            'subject' => $this->engine->render($template->getSubject(), $params),
-            'body'    => $this->engine->render($template->getTemplate(), $params)
+            $this->engine->render($template->getSubject(), $params),
+            $this->engine->render($template->getTemplate(), $params)
         );
     }
 
@@ -136,7 +135,6 @@ class Template implements TemplateInterface
 
         $this->objectManager->persist($entity);
         $this->objectManager->flush($entity);
-
         return $entity;
     }
 }

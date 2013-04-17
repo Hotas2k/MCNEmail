@@ -8,7 +8,7 @@
 
 namespace MCNEmail;
 
-use Zend\Mvc\Controller\ControllerManager;
+use MCNEmail\Service\Template\Engine\Twig;
 
 /**
  * Class Module
@@ -55,7 +55,8 @@ class Module
                 'mcn.service.email.template' => function ($sm) {
 
                     return new Service\Template(
-                        $sm->get('doctrine.entitymanager.ormdefault')
+                        $sm->get('doctrine.entitymanager.ormdefault'),
+                        new Twig()
                     );
                 },
 

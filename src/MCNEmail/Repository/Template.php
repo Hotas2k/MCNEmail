@@ -57,7 +57,7 @@ class Template extends EntityRepository implements TemplateInterface
     public function has($id, $locale)
     {
         $builder = $this->createQueryBuilder('template');
-        $builder->where('template.id = :id AND locale = :locale')
+        $builder->where('template.id = :id AND template.locale = :locale')
                 ->setParameters(
                     array(
                         'id'     => $id,

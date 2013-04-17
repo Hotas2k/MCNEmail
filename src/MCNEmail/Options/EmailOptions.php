@@ -76,6 +76,48 @@ class EmailOptions extends AbstractOptions
     protected $encoding = 'utf-8';
 
     /**
+     * @var string
+     */
+    protected $engine = 'Twig';
+
+    /**
+     * @var array
+     */
+    protected $engine_options = array();
+
+    /**
+     * @param $engine
+     */
+    public function setEngine($engine)
+    {
+        $this->engine = $engine;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEngine()
+    {
+        return $this->engine;
+    }
+
+    /**
+     * @param $engine_options
+     */
+    public function setEngineOptions($engine_options)
+    {
+        $this->engine_options = $engine_options;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEngineOptions()
+    {
+        return $this->engine_options;
+    }
+
+    /**
      * @param array $bcc
      */
     public function setBcc(array $bcc)
