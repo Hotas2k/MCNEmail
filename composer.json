@@ -15,7 +15,7 @@
     "require": {
         "mcn/stdlib": "dev-master",
         "twig/twig": "v1.12.3",
-        "zendframework/zendframework": "2.*",
+        "zendframework/zendframework": "2.*"
     },
     "autoload": {
         "psr-0": {
