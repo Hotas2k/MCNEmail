@@ -2,7 +2,7 @@
 return array(
     'modules' => array(
         'MCNStdlib',
-        'MCNUser',
+        'MCNEmail',
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(
@@ -12,5 +12,5 @@ return array(
             'module',
             'vendor',
         ),
-    ),
+    )
 );

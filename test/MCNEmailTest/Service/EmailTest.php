@@ -146,7 +146,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
                 /**
                  * @var $msg \Zend\Mail\Message
                  */
-
                 $this->assertEquals($msg->getSubject(), 'subject');
                 $this->assertEquals($msg->getBody(), 'body');
                 $this->assertEquals($msg->getEncoding(), 'utf-16');

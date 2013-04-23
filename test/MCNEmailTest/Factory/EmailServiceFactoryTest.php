@@ -39,47 +39,35 @@
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  */
 
-namespace MCNEmail\Repository;
+namespace MCNEmailTest\Factory;
 
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NoResultException;
-use MCNEmail\Service\Template as TemplateService;
+use MCNEmail\Factory\EmailServiceFactory;
+use MCNStdlib\TestUtil\ServiceManagerFactory;
+use PHPUnit_Framework_TestCase;
 
 /**
- * Class Template
- * @package MCNEmail\Repository
+ * Class EmailServiceFactory
+ * @package MCNEmailTest\Factory
  */
-class Template extends EntityRepository implements TemplateInterface
+class EmailServiceFactoryTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @codeCoverageIgnore
-     * @inheritdoc
+     * @var EmailServiceFactory
      */
-    public function has($id, $locale)
-    {
-        $builder = $this->createQueryBuilder('template');
-        $builder->where('template.id = :id AND template.locale = :locale')
-                ->setParameters(
-                    array(
-                        'id'     => $id,
-                        'locale' => $locale
-                    )
-                );
+    protected $factory;
 
-        return (bool) $builder->getQuery()->getOneOrNullResult();
+    protected function setUp()
+    {
+        $this->sl = ServiceManagerFactory::getServiceManager();
+        $this->sl->setAllowOverride(true);
+        $this->sl->setService('mcn.service.email.template', $this->getMock('MCNEmail\Service\TemplateInterface'));
+
+        $this->factory = new EmailServiceFactory();
     }
 
-    /**
-     * @codeCoverageIgnore
-     * @inheritdoc
-     */
-    public function get($id, $locale)
+    public function testDefaultConfigurationIsSane()
     {
-        return $this->findOneBy(
-            array(
-                'id'     => $id,
-                'locale' => $locale
-            )
-        );
+        $instance = $this->factory->createService($this->sl);
+        $this->assertInstanceOf('MCNEmail\Service\Email', $instance);
     }
 }
