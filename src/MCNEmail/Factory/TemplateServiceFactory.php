@@ -67,7 +67,7 @@ class TemplateServiceFactory implements FactoryInterface
 
         $options       = new $engineOptionsClassName($config['engine_options']);
         $engine        = new $engineClassName($options);
-        $objectManager = $serviceLocator->get('doctrine.objectmanager');
+        $objectManager = $serviceLocator->get('mcn.objectmanager');
 
         return new Template($objectManager, $engine);
     }
