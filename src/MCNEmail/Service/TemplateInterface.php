@@ -41,7 +41,6 @@
 
 namespace MCNEmail\Service;
 
-use MCNEmail\Entity\Template;
 use MCNStdlib\Interfaces\MailServiceInterface;
 
 /**
@@ -108,8 +107,8 @@ interface TemplateInterface
     /**
      * Saves the entity
      *
-     * @param Template $template
-     * @return Template
+     * @param \MCNEmail\Entity\Template $template
+     * @return \MCNEmail\Entity\Template
      */
-    public function save(Template $template);
+    public function save(\MCNEmail\Entity\Template $template);
 }
