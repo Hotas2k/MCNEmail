@@ -43,7 +43,7 @@ namespace MCNEmail\Entity;
 
 use MCNStdlib\Object\Entity\AbstractEntity;
 use MCNStdlib\Object\Entity\Behavior\TimestampableTrait;
-use Zend\Form\Annotation;
+use Zend\Form\Annotation as Form;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -54,7 +54,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="MCNEmail\Repository\Template")
  * @ORM\HasLifecycleCallbacks
  *
- * @Annotation\Name("email.template")
+ * @Form\Name("email.template")
  */
 class Template extends AbstractEntity
 {
@@ -66,7 +66,7 @@ class Template extends AbstractEntity
      * @ORM\Id
      * @ORM\Column(type="string")
      *
-     * @Annotation\Attributes({ "disabled" : "disabled" })
+     * @Form\Attributes({ "disabled" : "disabled" })
      */
     protected $id;
 
@@ -90,7 +90,7 @@ class Template extends AbstractEntity
      *
      * @ORM\Column(type="array")
      *
-     * @Annotation\Exclude
+     * @Form\Exclude
      */
     protected $params;
 
@@ -98,6 +98,9 @@ class Template extends AbstractEntity
      * @var string
      *
      * @ORM\Column(type="string", nullable=true)
+     *
+     * @Form\Type("Text")
+     * @Form\Options({ "label": "Subject" })
      */
     protected $subject;
 
@@ -105,6 +108,10 @@ class Template extends AbstractEntity
      * @var string
      *
      * @ORM\Column(type="text", nullable=true)
+     *
+     * @Form\Type("Textarea")
+     * @Form\Options({ "label": "Description" })
+     * @Form\Attributes({"class": "input-block-level", "rows": "10"})
      */
     protected $template;
 

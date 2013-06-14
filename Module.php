@@ -70,4 +70,19 @@ class Module
     {
         return array();
     }
+
+    /**
+     * @return array
+     */
+    public function getFormElementConfig()
+    {
+        return array(
+            'factories' => array(
+                #
+                ### Forms
+                #
+                'mcn.email.template' => 'MCNEmail\Form\Factory\Template'
+            )
+        );
+    }
 }

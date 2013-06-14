@@ -41,6 +41,7 @@
 
 namespace MCNEmail\Service;
 
+use MCNEmail\Entity\Template;
 use MCNStdlib\Interfaces\MailServiceInterface;
 
 /**
@@ -95,4 +96,20 @@ interface TemplateInterface
      * @return void
      */
     //public function templateRequestNewParams($templateId);
+
+    /**
+     * Fetches one record by its identifier
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function getOneById($id);
+
+    /**
+     * Saves the entity
+     *
+     * @param Template $template
+     * @return Template
+     */
+    public function save(Template $template);
 }

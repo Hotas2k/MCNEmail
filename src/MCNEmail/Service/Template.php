@@ -109,6 +109,30 @@ class Template implements TemplateInterface
         return $this->getRepository()->has($templateId, $locale);
     }
 
+    public function getOneById($id)
+    {
+        $criteria = array('id' => $id);
+        return $this->getRepository()->findOneBy($criteria);
+    }
+
+
+    /**
+     * @param TemplateEntity $template
+     * @return TemplateEntity
+     */
+    public function save(TemplateEntity $template)
+    {
+        $this->objectManager->persist($template);
+        $this->objectManager->flush();
+
+        return $template;
+    }
+
+    public function fetchAll()
+    {
+        return $this->getRepository()->findAll();
+    }
+
     /**
      * @inheritdoc
      */
