@@ -41,11 +41,11 @@
 
 namespace MCNEmail\Service;
 
+use MCNEmail\Entity\Template as TemplateEntity;
 use MCNStdlib\Interfaces\MailServiceInterface;
 
 /**
  * Class TemplateInterface
- * @package MCNEmail\Service
  */
 interface TemplateInterface
 {
@@ -79,7 +79,7 @@ interface TemplateInterface
      * @param null|array $params
      * @param string                  $format
      *
-     * @return \MCNEmail\Entity\Template
+     * @return Template
      */
     public function create($templateId, $locale, array $params = array(), $format = MailServiceInterface::FORMAT_HTML);
 
@@ -107,8 +107,8 @@ interface TemplateInterface
     /**
      * Saves the entity
      *
-     * @param \MCNEmail\Entity\Template $template
-     * @return \MCNEmail\Entity\Template
+     * @param TemplateEntity $template
+     * @return TemplateEntity
      */
-    public function save(\MCNEmail\Entity\Template $template);
+    public function save(TemplateEntity $template);
 }
