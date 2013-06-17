@@ -105,6 +105,13 @@ interface TemplateInterface
     public function getOneById($id);
 
     /**
+     * Fetches all records
+     *
+     * @return TemplateEntity
+     */
+    public function fetchAll();
+
+    /**
      * Saves the entity
      *
      * @param TemplateEntity $template
