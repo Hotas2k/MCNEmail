@@ -110,10 +110,22 @@ class Template extends AbstractEntity
      * @ORM\Column(type="text", nullable=true)
      *
      * @Form\Type("Textarea")
-     * @Form\Options({ "label": "Description" })
+     * @Form\Options({ "label": "Template" })
      * @Form\Attributes({"class": "input-block-level", "rows": "10"})
      */
     protected $template;
+
+    /**
+     * @var string
+     *
+     * @Form\Type("Textarea")
+     * @Form\Options({ "label": "Description" })
+     * @Form\Attributes({"class": "input-block-level", "rows": "2"})
+     * @Form\AllowEmpty
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $description;
 
     /**
      * @param boolean $enabled
@@ -209,5 +221,21 @@ class Template extends AbstractEntity
     public function getSubject()
     {
         return $this->subject;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

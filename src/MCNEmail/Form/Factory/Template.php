@@ -36,7 +36,7 @@ class Template implements FactoryInterface
         $form->setObject(new TemplateEntity());
         $form->setHydrator(new DoctrineObject($objectManager));
 
-        $form->setValidationGroup(array('subject', 'template'));
+        $form->setValidationGroup(array('subject', 'template', 'description'));
         return $form;
     }
 }
